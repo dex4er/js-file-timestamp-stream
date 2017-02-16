@@ -1,3 +1,5 @@
+'use strict'
+
 class MockWriteStream {
   constructor (filename, options) {
     this.filename = filename
