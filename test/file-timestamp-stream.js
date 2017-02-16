@@ -1,42 +1,36 @@
-'use strict'
-
 process.env.TZ = 'GMT'
 
-var Promise = require('any-promise')
-var sleep = require('sleep-promise')
-var t = require('tap')
+const sleep = require('sleep-promise')
+const t = require('tap')
 
-var FileTimestampStream = require('../lib/file-timestamp-stream')
-var mockFs = require('../mock/mock-fs')
+const FileTimestampStream = require('../lib/file-timestamp-stream')
+const mockFs = require('../mock/mock-fs')
 
-var TIMEOUT = 2000
+const TIMEOUT = 2000
 
 t.plan(4)
 
-t.test('Write lines to different files', {timeout: TIMEOUT}, function (t) {
-  var wstream, filename1, filename2
+t.test('Write lines to different files', {timeout: TIMEOUT}, t => {
+  let filename1, filename2
 
   t.plan(6)
 
-  Promise.resolve(true)
-  .then(function () {
-    wstream = new FileTimestampStream({
-      path: '%Y-%m-%dT%H:%M:%S.log',
-      flags: 'x',
-      fs: mockFs
-    })
-
-    t.type(wstream.pipe, 'function', 'wstream is stream')
-
-    wstream.write(Buffer.from('content1\r\n'))
-    t.equals(wstream.wstream.content.toString(), 'content1\r\n', 'content is correct')
-
-    filename1 = wstream.wstream.filename
-    t.equals(wstream.wstream.options.flags, 'x', 'flags for new file are correct')
-
-    return sleep(1100)
+  const wstream = new FileTimestampStream({
+    path: '%Y-%m-%dT%H:%M:%S.log',
+    flags: 'x',
+    fs: mockFs
   })
-  .then(function () {
+
+  t.type(wstream.pipe, 'function', 'wstream is stream')
+
+  wstream.write(Buffer.from('content1\r\n'))
+  t.equals(wstream.wstream.content.toString(), 'content1\r\n', 'content is correct')
+
+  filename1 = wstream.wstream.filename
+  t.equals(wstream.wstream.options.flags, 'x', 'flags for new file are correct')
+
+  sleep(1100)
+  .then(() => {
     wstream.write(Buffer.from('content2\r\n'))
     t.equals(wstream.wstream.content.toString(), 'content2\r\n', 'content is correct')
 
@@ -46,19 +40,19 @@ t.test('Write lines to different files', {timeout: TIMEOUT}, function (t) {
 
     t.end()
   })
-  .catch(function (err) {
+  .catch(err => {
     t.threw(err)
     t.end()
   })
 })
 
-t.test('Custom filename generator', {timeout: TIMEOUT}, function (t) {
+t.test('Custom filename generator', {timeout: TIMEOUT}, t => {
   t.plan(7)
 
-  var n = 0
+  let n = 0
 
-  var wstream = new FileTimestampStream({
-    newFilename: function () {
+  const wstream = new FileTimestampStream({
+    newFilename: () => {
       return Math.floor(n++ / 2) + '.log'
     },
     fs: mockFs
@@ -81,12 +75,13 @@ t.test('Custom filename generator', {timeout: TIMEOUT}, function (t) {
   t.end()
 })
 
-t.test('_writev', {timeout: TIMEOUT}, function (t) {
+t.test('_writev', {timeout: TIMEOUT}, t => {
   t.plan(7)
-  var n = 0
 
-  var wstream = new FileTimestampStream({
-    newFilename: function () {
+  let n = 0
+
+  const wstream = new FileTimestampStream({
+    newFilename: () => {
       return Math.floor(n++ / 2) + '.log'
     },
     fs: mockFs
@@ -109,10 +104,10 @@ t.test('_writev', {timeout: TIMEOUT}, function (t) {
   t.end()
 })
 
-t.test('Default options', {timeout: TIMEOUT}, function (t) {
+t.test('Default options', {timeout: TIMEOUT}, t => {
   t.plan(4)
 
-  var wstream = new FileTimestampStream({
+  const wstream = new FileTimestampStream({
     fs: mockFs
   })
 
