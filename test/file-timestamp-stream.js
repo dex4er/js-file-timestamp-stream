@@ -1,3 +1,5 @@
+'use strict'
+
 process.env.TZ = 'GMT'
 
 const sleep = require('sleep-promise')
