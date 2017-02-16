@@ -1,0 +1,36 @@
+{
+  "name": "file-timestamp-stream",
+  "version": "0.0.1",
+  "description": "Writing stream with file rotating based on timestamp",
+  "main": "lib/file-timestamp-stream.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dex4er/js-file-timestamp-stream"
+  },
+  "keywords": [
+    "stream",
+    "rotate",
+    "timestamp"
+  ],
+  "author": "Piotr Roszatycki",
+  "license": "Artistic-2.0",
+  "bugs": {
+    "url": "https://github.com/dex4er/js-file-timestamp-stream/issues"
+  },
+  "homepage": "http://github.com/dex4er/js-file-timestamp-stream",
+  "dependencies": {
+    "ultra-strftime": "^1.0.2"
+  },
+  "devDependencies": {
+    "any-promise": "^1.3.0",
+    "sleep-promise": "^2.0.0",
+    "standard": "^8.6.0",
+    "tap": "^10.1.1"
+  },
+  "scripts": {
+    "test": "tap --timeout 20 test/*.js",
+    "test-coverage": "tap --coverage --timeout 120 test/*.js",
+    "test-standard": "standard",
+    "test-standard-coverage": "npm run test-standard && npm run test-coverage"
+  }
+}
