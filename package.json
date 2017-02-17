@@ -28,7 +28,7 @@
   },
   "scripts": {
     "test": "tap --timeout 20 test/*.js",
-    "test-coverage": "tap --coverage --timeout 120 test/*.js",
+    "test-coverage": "nyc -x mock -x test tap --timeout 120 test/*.js",
     "test-standard": "standard",
     "test-standard-coverage": "npm run test-standard && npm run test-coverage"
   }
