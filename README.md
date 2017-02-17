@@ -30,10 +30,10 @@ const stream = new FileTimestampStream({
 
 #### Path template format:
 
-Path can contain [strftime](https://www.npmjs.com/package/strftime)'s specifiers.
+Path can contain [strftime](https://www.npmjs.com/package/strftime) specifiers.
 
 ### License
 
 Copyright (c) 2017 Piotr Roszatycki <piotr.roszatycki@gmail.com>
 
-[Artistic License 2.0](https://opensource.org/licenses/Artistic-2.0)
+[MIT](https://opensource.org/licenses/MIT)
