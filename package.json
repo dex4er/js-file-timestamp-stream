@@ -1,6 +1,6 @@
 {
   "name": "file-timestamp-stream",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Writing stream with file rotating based on timestamp",
   "main": "lib/file-timestamp-stream.js",
   "repository": {
