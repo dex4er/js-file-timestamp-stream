@@ -8,14 +8,20 @@ class MockWriteStream {
   }
 
   _write (chunk, encoding, callback) {
+    if (this.filename === 'badwrite') {
+      return callback(new Error('badwrite'))
+    }
+
     this.content = Buffer.concat([this.content, chunk])
 
-    if (callback) {
-      callback()
-    }
+    return callback()
   }
 
   _writev (chunks, callback) {
+    if (this.filename === 'badwrite') {
+      callback(new Error('badwrite'))
+    }
+
     for (let i = 0, len = chunks.length; i < len; ++i) {
       let chunk = chunks[i]
       this.content = Buffer.concat([this.content, chunk])
@@ -31,6 +37,10 @@ class MockWriteStream {
 
 module.exports = {
   createWriteStream: (filename, options) => {
-    return new MockWriteStream(filename, options)
+    if (filename === 'badopen') {
+      throw new Error('badopen')
+    } else {
+      return new MockWriteStream(filename, options)
+    }
   }
 }

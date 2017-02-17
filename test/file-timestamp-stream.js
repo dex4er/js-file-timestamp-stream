@@ -10,7 +10,7 @@ const mockFs = require('../mock/mock-fs')
 
 const TIMEOUT = 2000
 
-t.plan(4)
+t.plan(8)
 
 t.test('Write lines to different files', {timeout: TIMEOUT}, t => {
   let filename1, filename2
@@ -126,6 +126,80 @@ t.test('Default options', {timeout: TIMEOUT}, t => {
   t.equals(wstream.wstream.options.flags, 'a', 'flags for new file are correct')
 
   t.end()
+})
+
+t.test('Open error for _write', {timeout: TIMEOUT}, t => {
+  t.plan(3)
+
+  const wstream = new FileTimestampStream({
+    path: 'badopen',
+    fs: mockFs
+  })
+
+  t.type(wstream.pipe, 'function', 'wstream is stream')
+
+  wstream.on('error', e => {
+    t.pass('error signal was received')
+    t.equal(e.message, 'badopen', 'error is correct')
+    t.end()
+  })
+  wstream.write(Buffer.from('nevermind'))
+})
+
+t.test('Write error for _write', {timeout: TIMEOUT}, t => {
+  t.plan(3)
+
+  const wstream = new FileTimestampStream({
+    path: 'badwrite',
+    fs: mockFs
+  })
+
+  t.type(wstream.pipe, 'function', 'wstream is stream')
+
+  wstream.on('error', e => {
+    t.pass('callback was called')
+    t.equal(e.message, 'badwrite', 'error is correct')
+    t.end()
+  })
+  wstream.write(Buffer.from('nevermind'))
+})
+
+t.test('Open error for _writev', {timeout: TIMEOUT}, t => {
+  t.plan(3)
+
+  const wstream = new FileTimestampStream({
+    path: 'badopen',
+    fs: mockFs
+  })
+
+  t.type(wstream.pipe, 'function', 'wstream is stream')
+
+  wstream._writev([Buffer.from('nevermind')], e => {
+    if (e) {
+      t.pass('callback was received')
+      t.equal(e.message, 'badopen', 'error is correct')
+      t.end()
+    }
+  })
+})
+
+t.test('Write error for _writev', {timeout: TIMEOUT}, t => {
+  t.plan(3)
+
+  const wstream = new FileTimestampStream({
+    path: 'badwrite',
+    fs: mockFs
+  })
+
+  t.type(wstream.pipe, 'function', 'wstream is stream')
+
+  wstream._writev([Buffer.from('')], e => {
+    if (e) {
+      t.pass('callback was called')
+      t.equal(e.message, 'badwrite', 'error is correct')
+      t.end()
+    }
+  })
 })
 
 t.end()
