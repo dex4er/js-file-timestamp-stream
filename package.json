@@ -13,7 +13,7 @@
     "timestamp"
   ],
   "author": "Piotr Roszatycki",
-  "license": "Artistic-2.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/dex4er/js-file-timestamp-stream/issues"
   },
