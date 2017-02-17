@@ -49,7 +49,7 @@ t.test('Write lines to different files', {timeout: TIMEOUT}, t => {
 })
 
 t.test('Custom filename generator', {timeout: TIMEOUT}, t => {
-  t.plan(7)
+  t.plan(8)
 
   let n = 0
 
@@ -70,15 +70,17 @@ t.test('Custom filename generator', {timeout: TIMEOUT}, t => {
   t.equals(wstream.wstream.content.toString(), 'content1\r\ncontent2\r\n', 'content is correct')
   t.equals(wstream.wstream.filename, '0.log', 'filename is correct')
 
-  wstream.write(Buffer.from('content3\r\n'))
-  t.equals(wstream.wstream.content.toString(), 'content3\r\n', 'content is correct')
-  t.equals(wstream.wstream.filename, '1.log', 'filename is correct')
+  wstream.write(Buffer.from('content3\r\n'), () => {
+    t.pass('callback was called')
+    t.equals(wstream.wstream.content.toString(), 'content3\r\n', 'content is correct')
+    t.equals(wstream.wstream.filename, '1.log', 'filename is correct')
 
-  t.end()
+    t.end()
+  })
 })
 
 t.test('_writev', {timeout: TIMEOUT}, t => {
-  t.plan(7)
+  t.plan(8)
 
   let n = 0
 
@@ -99,23 +101,26 @@ t.test('_writev', {timeout: TIMEOUT}, t => {
   t.equals(wstream.wstream.content.toString(), 'ABCDEF', 'content is correct')
   t.equals(wstream.wstream.filename, '0.log', 'filename is correct')
 
-  wstream._writev([Buffer.from('G'), Buffer.from('H'), Buffer.from('I')])
-  t.equals(wstream.wstream.content.toString(), 'GHI', 'content is correct')
-  t.equals(wstream.wstream.filename, '1.log', 'filename is correct')
+  wstream._writev([Buffer.from('G'), Buffer.from('H'), Buffer.from('I')], () => {
+    t.pass('callback was called')
 
-  t.end()
+    t.equals(wstream.wstream.content.toString(), 'GHI', 'content is correct')
+    t.equals(wstream.wstream.filename, '1.log', 'filename is correct')
+
+    t.end()
+  })
 })
 
 t.test('Default options', {timeout: TIMEOUT}, t => {
   t.plan(4)
 
-  const wstream = new FileTimestampStream({
-    fs: mockFs
-  })
+  const wstream = new FileTimestampStream()
+  wstream.fs = mockFs
 
   t.type(wstream.pipe, 'function', 'wstream is stream')
 
   wstream.write(Buffer.from('content1\r\n'))
+
   t.equals(wstream.wstream.content.toString(), 'content1\r\n', 'content is correct')
   t.equals(wstream.wstream.filename, 'out.log', 'filename is correct')
   t.equals(wstream.wstream.options.flags, 'a', 'flags for new file are correct')
