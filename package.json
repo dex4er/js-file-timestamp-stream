@@ -18,6 +18,9 @@
     "url": "https://github.com/dex4er/js-file-timestamp-stream/issues"
   },
   "homepage": "http://github.com/dex4er/js-file-timestamp-stream",
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "dependencies": {
     "ultra-strftime": "^1.0.2"
   },
