@@ -3,18 +3,14 @@
 process.env.TZ = 'GMT'
 
 const sleep = require('sleep-promise')
-const t = require('tap')
 
 const FileTimestampStream = require('../lib/file-timestamp-stream')
 const mockFs = require('../mock/mock-fs')
 
-/* eslint-env mocha */
-t.mochaGlobals()
+/* global scenario, given, when, then */
+const t = require('tap')
+require('tap-given')(t)
 require('chai').should()
-const scenario = context
-const given = (what, how) => { return it('Given ' + what, how) }
-const when = (what, how) => { return it('When ' + what, how) }
-const then = (what, how) => { return it('Then ' + what, how) }
 
 scenario('Write lines to different files', function () {
   given('stream created with %S specifier', () => {

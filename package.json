@@ -29,7 +29,8 @@
     "nyc": "^10.1.2",
     "sleep-promise": "^2.0.0",
     "standard": "^8.6.0",
-    "tap": "^10.1.1"
+    "tap": "^10.1.2",
+    "tap-given": "0.1.0"
   },
   "scripts": {
     "test": "tap --timeout 20 test/*.js",
