@@ -1,6 +1,6 @@
 {
   "name": "file-timestamp-stream",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Writing stream with file rotating based on timestamp",
   "main": "lib/file-timestamp-stream.js",
   "repository": {
@@ -29,8 +29,8 @@
     "nyc": "^10.1.2",
     "sleep-promise": "^2.0.0",
     "standard": "^8.6.0",
-    "tap": "^10.1.2",
-    "tap-given": "0.1.0"
+    "tap": "^10.2.0",
+    "tap-given": "^0.2.0"
   },
   "scripts": {
     "test": "tap --timeout 20 test/*.js",
@@ -39,7 +39,6 @@
     "test-standard-coverage": "npm run test-standard && npm run test-coverage"
   },
   "nyc": {
-    "exclude": [
-    ]
+    "exclude": []
   }
 }
