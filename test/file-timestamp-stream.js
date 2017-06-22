@@ -7,10 +7,13 @@ const sleep = require('sleep-promise')
 const FileTimestampStream = require('../lib/file-timestamp-stream')
 const mockFs = require('../mock/mock-fs')
 
-/* global Feature, Scenario, Given, When, Then */
 const t = require('tap')
 require('tap-given')(t)
-require('chai').should()
+
+const chai = require('chai')
+const dirtyChai = require('dirty-chai')
+chai.should()
+chai.use(dirtyChai)
 
 Feature('Test file-timestamp-stream module', () => {
   Scenario('Write lines to different files', function () {
@@ -34,7 +37,7 @@ Feature('Test file-timestamp-stream module', () => {
 
     Then('stream has defined filename', () => {
       this.filename1 = this.wstream.wstream.filename
-      this.filename1.should.be.ok
+      this.filename1.should.be.ok()
     })
 
     Then('stream has correct flags', () => {
@@ -55,7 +58,7 @@ Feature('Test file-timestamp-stream module', () => {
 
     Then('stream has defined another filename', () => {
       this.filename2 = this.wstream.wstream.filename
-      this.filename2.should.be.ok
+      this.filename2.should.be.ok()
     })
 
     Then('stream has correct flags', () => {

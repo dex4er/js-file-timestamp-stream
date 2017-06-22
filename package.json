@@ -1,6 +1,6 @@
 {
   "name": "file-timestamp-stream",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Writing stream with file rotating based on timestamp",
   "main": "lib/file-timestamp-stream.js",
   "repository": {
@@ -25,18 +25,29 @@
     "ultra-strftime": "^1.0.2"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "nyc": "^10.1.2",
+    "chai": "^4.0.2",
+    "dirty-chai": "^2.0.0",
     "sleep-promise": "^2.0.0",
-    "standard": "^8.6.0",
-    "tap": "^10.2.0",
-    "tap-given": "^0.2.0"
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.2",
+    "tap": "^10.5.1",
+    "tap-given": "^0.4.1"
   },
   "scripts": {
-    "test": "tap --timeout 20 test/*.js",
-    "test-coverage": "nyc tap --timeout 120 test/*.js",
-    "test-standard": "standard",
-    "test-standard-coverage": "npm run test-standard && npm run test-coverage"
+    "test": "standard --verbose | snazzy && tap test/*.js",
+    "test-coverage": "npm test -- --coverage",
+    "test-onchange-lcovonly": "npm run -s test-coverage -- -R min --coverage-report lcovonly; onchange '**/*.js' -- npm run -s test-coverage -- -R min --coverage-report lcovonly"
+  },
+  "standard": {
+    "globals": [
+      "After",
+      "And",
+      "Feature",
+      "Given",
+      "Scenario",
+      "Then",
+      "When"
+    ]
   },
   "nyc": {
     "exclude": []
