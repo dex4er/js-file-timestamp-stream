@@ -16,292 +16,318 @@ chai.should()
 chai.use(dirtyChai)
 
 Feature('Test file-timestamp-stream module', () => {
-  Scenario('Write lines to different files', function () {
+  Scenario('Write lines to different files', () => {
+    let filename1
+    let filename2
+    let wstream
+
     Given('stream created with %S specifier', () => {
-      this.wstream = new FileTimestampStream({
+      wstream = new FileTimestampStream({
         path: '%Y-%m-%dT%H:%M:%S.log',
         flags: 'x',
         fs: mockFs
       })
 
-      this.wstream.should.have.property('pipe').that.is.a('function')
+      wstream.should.have.property('pipe').that.is.a('function')
     })
 
     When('I write first part of content to stream', () => {
-      this.wstream.write(Buffer.from('content1\r\n'))
+      wstream.write(Buffer.from('content1\r\n'))
     })
 
     Then('file contains first part of content', () => {
-      this.wstream.wstream.content.toString().should.equal('content1\r\n')
+      wstream.wstream.content.toString().should.equal('content1\r\n')
     })
 
-    Then('stream has defined filename', () => {
-      this.filename1 = this.wstream.wstream.filename
-      this.filename1.should.be.ok()
+    And('stream has defined filename', () => {
+      filename1 = wstream.wstream.filename
+      filename1.should.be.ok()
     })
 
-    Then('stream has correct flags', () => {
-      this.wstream.wstream.options.flags.should.equal('x')
+    And('stream has correct flags', () => {
+      wstream.wstream.options.flags.should.equal('x')
     })
 
     When('I wait more than one second', () => {
       return sleep(1100)
     })
 
-    When('I write second part of content to the same stream', () => {
-      this.wstream.write(Buffer.from('content2\r\n'))
+    And('I write second part of content to the same stream', () => {
+      wstream.write(Buffer.from('content2\r\n'))
     })
 
     Then('file contains second part of content', () => {
-      this.wstream.wstream.content.toString().should.equal('content2\r\n')
+      wstream.wstream.content.toString().should.equal('content2\r\n')
     })
 
-    Then('stream has defined another filename', () => {
-      this.filename2 = this.wstream.wstream.filename
-      this.filename2.should.be.ok()
+    And('stream has defined another filename', () => {
+      filename2 = wstream.wstream.filename
+      filename2.should.be.ok()
     })
 
-    Then('stream has correct flags', () => {
-      this.wstream.wstream.options.flags.should.equal('x')
+    And('stream has correct flags', () => {
+      wstream.wstream.options.flags.should.equal('x')
     })
 
-    Then('stream has new filename different than previous', () => {
-      this.filename2.should.not.equal(this.filename1)
+    And('stream has new filename different than previous', () => {
+      filename2.should.not.equal(filename1)
     })
   })
 
-  Scenario('Custom filename generator', function () {
+  Scenario('Custom filename generator', () => {
+    let n
+    let wstream
+
     Given('counter', () => {
-      this.n = 0
+      n = 0
     })
 
-    Given('stream created with custom filename generator which uses counter', () => {
-      this.wstream = new FileTimestampStream({
+    And('stream created with custom filename generator which uses counter', () => {
+      wstream = new FileTimestampStream({
         newFilename: () => {
-          return Math.floor(this.n++ / 2) + '.log'
+          return Math.floor(n++ / 2) + '.log'
         },
         fs: mockFs
       })
 
-      this.wstream.should.have.property('pipe').that.is.a('function')
+      wstream.should.have.property('pipe').that.is.a('function')
     })
 
     When('I write fist part of content to stream', () => {
-      this.wstream.write(Buffer.from('content1\r\n'))
+      wstream.write(Buffer.from('content1\r\n'))
     })
 
     Then('file contains first part of content', () => {
-      this.wstream.wstream.content.toString().should.equal('content1\r\n')
+      wstream.wstream.content.toString().should.equal('content1\r\n')
     })
 
-    Then('stream has correct filename', () => {
-      this.wstream.wstream.filename.should.equal('0.log')
+    And('stream has correct filename', () => {
+      wstream.wstream.filename.should.equal('0.log')
     })
 
     When('I write second part of content to stream', () => {
-      this.wstream.write(Buffer.from('content2\r\n'))
+      wstream.write(Buffer.from('content2\r\n'))
     })
 
     Then('file contains both parts of content', () => {
-      this.wstream.wstream.content.toString().should.equal('content1\r\ncontent2\r\n')
+      wstream.wstream.content.toString().should.equal('content1\r\ncontent2\r\n')
     })
 
-    Then('stream has unchanged filename', () => {
-      this.wstream.wstream.filename.should.equal('0.log')
+    And('stream has unchanged filename', () => {
+      wstream.wstream.filename.should.equal('0.log')
     })
 
     When('I write third part of content to stream (this time with callback)', done => {
-      this.wstream.write(Buffer.from('content3\r\n'), done)
+      wstream.write(Buffer.from('content3\r\n'), done)
     })
 
     Then('file contains only third part of content', () => {
-      this.wstream.wstream.content.toString().should.equal('content3\r\n')
+      wstream.wstream.content.toString().should.equal('content3\r\n')
     })
 
-    Then('stream has new filename', () => {
-      this.wstream.wstream.filename.should.equal('1.log')
+    And('stream has new filename', () => {
+      wstream.wstream.filename.should.equal('1.log')
     })
   })
 
-  Scenario('Use _writev method directly', function () {
+  Scenario('Use _writev method directly', () => {
+    let n
+    let wstream
+
     Given('counter', () => {
-      this.n = 0
+      n = 0
     })
 
-    Given('stream created with custom filename generator which uses counter', () => {
-      this.wstream = new FileTimestampStream({
+    And('stream created with custom filename generator which uses counter', () => {
+      wstream = new FileTimestampStream({
         newFilename: () => {
-          return Math.floor(this.n++ / 2) + '.log'
+          return Math.floor(n++ / 2) + '.log'
         },
         fs: mockFs
       })
 
-      this.wstream.should.have.property('pipe').that.is.a('function')
+      wstream.should.have.property('pipe').that.is.a('function')
     })
 
     When('I write first 3 bytes to stream', () => {
-      this.wstream._writev([Buffer.from('A'), Buffer.from('B'), Buffer.from('C')])
+      wstream._writev([Buffer.from('A'), Buffer.from('B'), Buffer.from('C')])
     })
 
     Then('file contains first 3 bytes', () => {
-      this.wstream.wstream.content.toString().should.equal('ABC')
+      wstream.wstream.content.toString().should.equal('ABC')
     })
 
-    Then('stream has unchanged filename', () => {
-      this.wstream.wstream.filename.should.equal('0.log')
+    And('stream has unchanged filename', () => {
+      wstream.wstream.filename.should.equal('0.log')
     })
 
     When('I write next 3 bytes to stream', () => {
-      this.wstream._writev([Buffer.from('D'), Buffer.from('E'), Buffer.from('F')])
+      wstream._writev([Buffer.from('D'), Buffer.from('E'), Buffer.from('F')])
     })
 
     Then('file contains first 6 bytes', () => {
-      this.wstream.wstream.content.toString().should.equal('ABCDEF')
+      wstream.wstream.content.toString().should.equal('ABCDEF')
     })
 
-    Then('stream has unchanged name', () => {
-      this.wstream.wstream.filename.should.equal('0.log')
+    And('stream has unchanged name', () => {
+      wstream.wstream.filename.should.equal('0.log')
     })
 
     When('I write last 3 bytes to stream (this time with callback)', done => {
-      this.wstream._writev([Buffer.from('G'), Buffer.from('H'), Buffer.from('I')], done)
+      wstream._writev([Buffer.from('G'), Buffer.from('H'), Buffer.from('I')], done)
     })
 
     Then('file contains last 3 bytes', () => {
-      this.wstream.wstream.content.toString().should.equal('GHI')
+      wstream.wstream.content.toString().should.equal('GHI')
     })
 
-    Then('stream has new filename', () => {
-      this.wstream.wstream.filename.should.equal('1.log')
+    And('stream has new filename', () => {
+      wstream.wstream.filename.should.equal('1.log')
     })
   })
 
-  Scenario('Default options', function () {
-    Given('stream created with no options but overriden fs property', () => {
-      this.wstream = new FileTimestampStream()
-      this.wstream.fs = mockFs
+  Scenario('Default options', () => {
+    let wstream
 
-      this.wstream.should.have.property('pipe').that.is.a('function')
+    Given('stream created with no options but overriden fs property', () => {
+      wstream = new FileTimestampStream()
+      wstream.fs = mockFs
+
+      wstream.should.have.property('pipe').that.is.a('function')
     })
 
     When('I write fist part of content to stream', () => {
-      this.wstream.write(Buffer.from('content1\r\n'))
+      wstream.write(Buffer.from('content1\r\n'))
     })
 
     Then('file contains first part of content', () => {
-      this.wstream.wstream.content.toString().should.equal('content1\r\n')
+      wstream.wstream.content.toString().should.equal('content1\r\n')
     })
 
-    Then('stream has the default filename', () => {
-      this.wstream.wstream.filename.should.equal('out.log')
+    And('stream has the default filename', () => {
+      wstream.wstream.filename.should.equal('out.log')
     })
 
     Then('stream has the default flags', () => {
-      this.wstream.wstream.options.flags.should.equal('a')
+      wstream.wstream.options.flags.should.equal('a')
     })
   })
 
-  Scenario('Open error for _write', function () {
+  Scenario('Open error for _write', () => {
+    let error
+    let wstream
+
     Given('stream with an error on open file', () => {
-      this.wstream = new FileTimestampStream({
+      wstream = new FileTimestampStream({
         path: 'badopen',
         fs: mockFs
       })
 
-      this.wstream.should.have.property('pipe').that.is.a('function')
+      wstream.should.have.property('pipe').that.is.a('function')
     })
 
-    Given('subscription on error event', () => {
-      this.wstream.on('error', e => {
-        this.error = e
+    And('subscription on error event', () => {
+      wstream.on('error', e => {
+        error = e
       })
     })
 
     When('I write something to stream', () => {
-      this.wstream.write(Buffer.from('something'))
+      wstream.write(Buffer.from('something'))
     })
 
     Then("an error was because can't open file", () => {
-      this.error.should.have.property('message').that.equals('badopen')
+      error.should.have.property('message').that.equals('badopen')
     })
   })
 
-  Scenario('Write error for _write', function () {
+  Scenario('Write error for _write', () => {
+    let error
+    let wstream
+
     Given('stream with an error on write to file', () => {
-      this.wstream = new FileTimestampStream({
+      wstream = new FileTimestampStream({
         path: 'badwrite',
         fs: mockFs
       })
 
-      this.wstream.should.have.property('pipe').that.is.a('function')
+      wstream.should.have.property('pipe').that.is.a('function')
     })
 
-    Given('subscription on error event', () => {
-      this.wstream.on('error', e => {
-        this.error = e
+    And('subscription on error event', () => {
+      wstream.on('error', e => {
+        error = e
       })
     })
 
     When('I write something to stream', () => {
-      this.wstream.write(Buffer.from('something'))
+      wstream.write(Buffer.from('something'))
     })
 
     Then("an error was because can't write to file", () => {
-      this.error.should.have.property('message').that.equals('badwrite')
+      error.should.have.property('message').that.equals('badwrite')
     })
   })
 
-  Scenario('Open error for _writev', function () {
+  Scenario('Open error for _writev', () => {
+    let callback
+    let error
+    let wstream
+
     Given('stream with an error on open file', () => {
-      this.wstream = new FileTimestampStream({
+      wstream = new FileTimestampStream({
         path: 'badopen',
         fs: mockFs
       })
 
-      this.wstream.should.have.property('pipe').that.is.a('function')
+      wstream.should.have.property('pipe').that.is.a('function')
     })
 
-    Given('callback for _writev', () => {
-      this.callback = e => {
+    And('callback for _writev', () => {
+      callback = e => {
         if (e) {
-          this.error = e
+          error = e
         }
       }
     })
 
     When('I write some bytes to stream', () => {
-      this.wstream._writev([Buffer.from('A'), Buffer.from('B'), Buffer.from('C')], this.callback)
+      wstream._writev([Buffer.from('A'), Buffer.from('B'), Buffer.from('C')], callback)
     })
 
     Then("an error was because can't open file", () => {
-      this.error.should.have.property('message').that.equals('badopen')
+      error.should.have.property('message').that.equals('badopen')
     })
   })
 
   Scenario('Write error for _writev', function () {
+    let callback
+    let error
+    let wstream
+
     Given('stream with an error on write to file', () => {
-      this.wstream = new FileTimestampStream({
+      wstream = new FileTimestampStream({
         path: 'badwrite',
         fs: mockFs
       })
 
-      this.wstream.should.have.property('pipe').that.is.a('function')
+      wstream.should.have.property('pipe').that.is.a('function')
     })
 
-    Given('callback for _writev', () => {
-      this.callback = e => {
+    And('callback for _writev', () => {
+      callback = e => {
         if (e) {
-          this.error = e
+          error = e
         }
       }
     })
 
     When('I write some bytes to stream', () => {
-      this.wstream._writev([Buffer.from('A'), Buffer.from('B'), Buffer.from('C')], this.callback)
+      wstream._writev([Buffer.from('A'), Buffer.from('B'), Buffer.from('C')], callback)
     })
 
     Then("an error was because can't write to file", () => {
-      this.error.should.have.property('message').that.equals('badwrite')
+      error.should.have.property('message').that.equals('badwrite')
     })
   })
 })
