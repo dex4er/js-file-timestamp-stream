@@ -2,7 +2,7 @@
 
 process.env.TZ = 'GMT'
 
-const sleep = require('sleep-promise')
+const delay = require('delay')
 
 const FileTimestampStream = require('../lib/file-timestamp-stream').FileTimestampStream
 const mockFs = require('../mock/mock-fs')
@@ -47,7 +47,7 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     When('I wait more than one second', () => {
-      return sleep(1100)
+      return delay(1100)
     })
 
     And('I write second part of content to the same stream', () => {
