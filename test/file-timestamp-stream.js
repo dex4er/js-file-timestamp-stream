@@ -11,9 +11,7 @@ const t = require('tap')
 require('tap-given')(t)
 
 const chai = require('chai')
-const dirtyChai = require('dirty-chai')
 chai.should()
-chai.use(dirtyChai)
 
 Feature('Test file-timestamp-stream module', () => {
   Scenario('Write lines to different files', () => {
@@ -36,16 +34,16 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains first part of content', () => {
-      wstream.wstream.content.toString().should.equal('content1\r\n')
+      wstream.stream.content.toString().should.equal('content1\r\n')
     })
 
     And('stream has defined filename', () => {
-      filename1 = wstream.wstream.filename
-      filename1.should.be.ok()
+      filename1 = wstream.stream.filename
+      return filename1.should.be.ok
     })
 
     And('stream has correct flags', () => {
-      wstream.wstream.options.flags.should.equal('x')
+      wstream.stream.options.flags.should.equal('x')
     })
 
     When('I wait more than one second', () => {
@@ -57,16 +55,16 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains second part of content', () => {
-      wstream.wstream.content.toString().should.equal('content2\r\n')
+      wstream.stream.content.toString().should.equal('content2\r\n')
     })
 
     And('stream has defined another filename', () => {
-      filename2 = wstream.wstream.filename
-      filename2.should.be.ok()
+      filename2 = wstream.stream.filename
+      return filename2.should.be.ok
     })
 
     And('stream has correct flags', () => {
-      wstream.wstream.options.flags.should.equal('x')
+      wstream.stream.options.flags.should.equal('x')
     })
 
     And('stream has new filename different than previous', () => {
@@ -98,11 +96,11 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains first part of content', () => {
-      wstream.wstream.content.toString().should.equal('content1\r\n')
+      wstream.stream.content.toString().should.equal('content1\r\n')
     })
 
     And('stream has correct filename', () => {
-      wstream.wstream.filename.should.equal('0.log')
+      wstream.stream.filename.should.equal('0.log')
     })
 
     When('I write second part of content to stream', () => {
@@ -110,11 +108,11 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains both parts of content', () => {
-      wstream.wstream.content.toString().should.equal('content1\r\ncontent2\r\n')
+      wstream.stream.content.toString().should.equal('content1\r\ncontent2\r\n')
     })
 
     And('stream has unchanged filename', () => {
-      wstream.wstream.filename.should.equal('0.log')
+      wstream.stream.filename.should.equal('0.log')
     })
 
     When('I write third part of content to stream (this time with callback)', done => {
@@ -122,11 +120,11 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains only third part of content', () => {
-      wstream.wstream.content.toString().should.equal('content3\r\n')
+      wstream.stream.content.toString().should.equal('content3\r\n')
     })
 
     And('stream has new filename', () => {
-      wstream.wstream.filename.should.equal('1.log')
+      wstream.stream.filename.should.equal('1.log')
     })
   })
 
@@ -154,11 +152,11 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains first 3 bytes', () => {
-      wstream.wstream.content.toString().should.equal('ABC')
+      wstream.stream.content.toString().should.equal('ABC')
     })
 
     And('stream has unchanged filename', () => {
-      wstream.wstream.filename.should.equal('0.log')
+      wstream.stream.filename.should.equal('0.log')
     })
 
     When('I write next 3 bytes to stream', () => {
@@ -166,11 +164,11 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains first 6 bytes', () => {
-      wstream.wstream.content.toString().should.equal('ABCDEF')
+      wstream.stream.content.toString().should.equal('ABCDEF')
     })
 
     And('stream has unchanged name', () => {
-      wstream.wstream.filename.should.equal('0.log')
+      wstream.stream.filename.should.equal('0.log')
     })
 
     When('I write last 3 bytes to stream (this time with callback)', done => {
@@ -178,11 +176,11 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains last 3 bytes', () => {
-      wstream.wstream.content.toString().should.equal('GHI')
+      wstream.stream.content.toString().should.equal('GHI')
     })
 
     And('stream has new filename', () => {
-      wstream.wstream.filename.should.equal('1.log')
+      wstream.stream.filename.should.equal('1.log')
     })
   })
 
@@ -201,15 +199,15 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains first part of content', () => {
-      wstream.wstream.content.toString().should.equal('content1\r\n')
+      wstream.stream.content.toString().should.equal('content1\r\n')
     })
 
     And('stream has the default filename', () => {
-      wstream.wstream.filename.should.equal('out.log')
+      wstream.stream.filename.should.equal('out.log')
     })
 
     Then('stream has the default flags', () => {
-      wstream.wstream.options.flags.should.equal('a')
+      wstream.stream.options.flags.should.equal('a')
     })
   })
 

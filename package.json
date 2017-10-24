@@ -27,7 +27,6 @@
   "devDependencies": {
     "@types/node": "^8.0.46",
     "chai": "^4.1.2",
-    "dirty-chai": "^2.0.1",
     "sleep-promise": "^2.0.0",
     "snazzy": "^7.0.0",
     "standard": "^10.0.3",
