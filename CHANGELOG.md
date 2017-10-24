@@ -3,6 +3,7 @@
 ## v0.1.0 2017-10-24
 
   * Exports also as a class and namespace and the default.
+  * Property `wstream` was renamed to `stream`.
   * Typescript: typings added.
 
 ## v0.0.4 2017-06-22

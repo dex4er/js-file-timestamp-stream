@@ -11,8 +11,15 @@ export interface Options {
 }
 
 export class FileTimestampStream extends Writable {
-  wstream: Writable
+  options: Options
+
+  flags: string
+  fs: typeof fs
+  newFilename: () => string
+  path: string
+
   currentFilename: string
+  stream: Writable
 
   constructor (options: Options)
 }
