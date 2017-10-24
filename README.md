@@ -29,21 +29,26 @@ _Typescript:_
 import { FileTimestampStream } from 'file-timestamp-stream'
 ```
 
-#### Options:
+#### Options
 
 * `newFilename` is a custom function which returns new filename (default: returns new filename based on path and current time)
 * `flags` is a string with [flags](https://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback) for opened stream (default: `'a'`)
 * `fs` is a custom [fs](https://nodejs.org/api/fs.html) module (optional)
 * `path` is a template for new filenames (default: `'out.log'`)
 
-#### Properties:
+#### Properties
 
 * `currentFilename` contains last opened filename
-* `wstream` contains  [fs.WriteStream](https://nodejs.org/api/fs.html#fs_class_fs_writestream) object
+* `stream` contains  [fs.WriteStream](https://nodejs.org/api/fs.html#fs_class_fs_writestream) object
 
-#### Path template format:
+#### Path template format
 
 Path can contain [strftime](https://www.npmjs.com/package/strftime) specifiers.
+
+### Warning
+
+This module uses internal API of `fs.WriteStream`: `_write` and `_writev`
+methods directly for maximal performance.
 
 ### License
 
