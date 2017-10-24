@@ -1,4 +1,4 @@
-const FileTimestampStream = require('file-timestamp-stream')
+const FileTimestampStream = require('../lib/file-timestamp-stream')
 
 const stream = new FileTimestampStream({
   path: './%Y-%m-%dT%H:%M:%S.log',
