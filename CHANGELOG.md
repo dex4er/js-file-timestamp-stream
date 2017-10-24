@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.0 2017-10-24
+
+  * Exports also as a class and namespace and the default.
+  * Typescript: typings added.
+
 ## v0.0.4 2017-06-22
 
   * Upgraded chai@4.0.2, standard@10.0.2, tap@10.5.1, tap-given@0.4.1

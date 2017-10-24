@@ -12,13 +12,21 @@ npm install file-timestamp-stream
 
 ### Usage
 
+_Example:_
+
 ```js
-const FileTimestampStream = require('file-timestamp-stream')
+const { FileTimestampStream } = require('file-timestamp-stream')
 
 const stream = new FileTimestampStream({
   path: '%Y-%m-%dT%H.log',
   flags: 'a'
 })
+```
+
+_Typescript:_
+
+```js
+import { FileTimestampStream } from 'file-timestamp-stream'
 ```
 
 #### Options:

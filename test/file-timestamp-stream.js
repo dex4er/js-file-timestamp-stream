@@ -4,7 +4,7 @@ process.env.TZ = 'GMT'
 
 const sleep = require('sleep-promise')
 
-const FileTimestampStream = require('../lib/file-timestamp-stream')
+const FileTimestampStream = require('../lib/file-timestamp-stream').FileTimestampStream
 const mockFs = require('../mock/mock-fs')
 
 const t = require('tap')
