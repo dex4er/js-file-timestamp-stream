@@ -82,9 +82,11 @@ Feature('Test file-timestamp-stream module', () => {
       return finished.should.be.true
     })
 
-    And('stream can be destroyed', () => {
-      wstream.destroy()
-    })
+    if (typeof wstream.destroy === 'function') {
+      And('stream can be destroyed', () => {
+        wstream.destroy()
+      })
+    }
   })
 
   Scenario('Custom filename generator', () => {
@@ -227,8 +229,10 @@ Feature('Test file-timestamp-stream module', () => {
       error.should.have.property('message').that.equals('badwrite')
     })
 
-    And('stream can be destroyed', () => {
-      wstream.destroy(error)
-    })
+    if (typeof wstream.destroy === 'function') {
+      And('stream can be destroyed', () => {
+        wstream.destroy()
+      })
+    }
   })
 })
