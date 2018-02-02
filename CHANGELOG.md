@@ -2,7 +2,8 @@
 
 ## v0.2.0 2018-02-02
 
-  *
+  * Only public interface of Writable is used.
+  * Implemented `_destroy` method which cleans up file stream.
 
 ## v0.1.0 2017-10-24
 

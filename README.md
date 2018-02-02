@@ -45,13 +45,8 @@ import { FileTimestampStream } from 'file-timestamp-stream'
 
 Path can contain [strftime](https://www.npmjs.com/package/strftime) specifiers.
 
-### Warning
-
-This module uses internal API of `fs.WriteStream`: `_write` and `_writev`
-methods directly for maximal performance.
-
 ### License
 
-Copyright (c) 2017 Piotr Roszatycki <piotr.roszatycki@gmail.com>
+Copyright (c) 2017-2018 Piotr Roszatycki <piotr.roszatycki@gmail.com>
 
 [MIT](https://opensource.org/licenses/MIT)
