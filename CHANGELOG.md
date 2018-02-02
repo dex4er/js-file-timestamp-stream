@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.0 2018-02-02
+
+  *
+
 ## v0.1.0 2017-10-24
 
   * Exports also as a class and namespace and the default.
