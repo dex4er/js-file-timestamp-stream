@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.1 2018-02-04
+
+  * Better clean up on `destroy`.
+
 ## v0.3.0 2018-02-03
 
   * Implemented `_final` method which calls `end` on file stream.
