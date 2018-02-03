@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.0 2018-02-03
+
+  * Implemented `_final` method which calls `end` on file stream.
+
 ## v0.2.0 2018-02-02
 
   * Only public interface of Writable is used.
