@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.0 2018-02-04
+
+  * Support `import FileTimestampStream from 'file-timestamp-stream'` syntax.
+  * Typescript: export options as `FileTimestampStreamOptions`.
+
 ## v0.3.1 2018-02-04
 
   * Better clean up on `destroy`.

@@ -1,4 +1,4 @@
-import { FileTimestampStream } from '../lib/file-timestamp-stream'
+import FileTimestampStream from '../lib/file-timestamp-stream'
 
 const timestampStream = new FileTimestampStream({
   flags: 'a',
