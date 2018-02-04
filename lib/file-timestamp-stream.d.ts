@@ -1,9 +1,9 @@
 /// <reference types="node" />
 
-import * as fs from 'fs'
+import fs from 'fs'
 import { Writable } from 'stream'
 
-export interface Options {
+export interface FileTimestampStreamOptions {
   flags?: string
   fs?: typeof fs
   newFilename?: () => string
@@ -11,7 +11,7 @@ export interface Options {
 }
 
 export class FileTimestampStream extends Writable {
-  readonly options: Options
+  readonly options: FileTimestampStreamOptions
 
   readonly flags: string
   readonly fs: typeof fs
@@ -21,5 +21,7 @@ export class FileTimestampStream extends Writable {
   currentFilename?: string
   stream?: Writable
 
-  constructor (options?: Options)
+  constructor (options?: FileTimestampStreamOptions)
 }
+
+export default FileTimestampStream
