@@ -89,6 +89,75 @@ Feature('Test file-timestamp-stream module', () => {
     }
   })
 
+  Scenario('Write corked lines to the same file', () => {
+    let filename
+    let finished = false
+    let wstream
+
+    Given('stream created with %S specifier', () => {
+      wstream = new FileTimestampStream({
+        path: '%Y-%m-%dT%H:%M:%S.log',
+        flags: 'x',
+        fs: mockFs
+      })
+      wstream.on('finish', () => {
+        finished = true
+      })
+      wstream.should.have.property('pipe').that.is.a('function')
+    })
+
+    When('I cork a stream', () => {
+      wstream.cork()
+    })
+
+    And('I write first part of content to stream', () => {
+      wstream.write(Buffer.from('content1\r\n'))
+    })
+
+    And('I wait more than one second', () => {
+      return delay(1100)
+    })
+
+    And('I write second part of content to the same stream', () => {
+      wstream.write(Buffer.from('content2\r\n'))
+    })
+
+    And('I uncork a stream', () => {
+      wstream.uncork()
+    })
+
+    And('I flush a stream', (done) => {
+      wstream.write('', done)
+    })
+
+    Then('file contains all parts of content', () => {
+      wstream.stream.content.toString().should.equal('content1\r\ncontent2\r\n')
+    })
+
+    And('stream has defined filename', () => {
+      filename = wstream.stream.filename
+      return filename.should.be.ok
+    })
+
+    And('stream has correct flags', () => {
+      wstream.stream.options.flags.should.equal('x')
+    })
+
+    When('I finish stream', (done) => {
+      wstream.end(done)
+    })
+
+    Then('stream is finished', () => {
+      return finished.should.be.true
+    })
+
+    if (typeof wstream.destroy === 'function') {
+      And('stream can be destroyed', () => {
+        wstream.destroy()
+      })
+    }
+  })
+
   Scenario('Custom filename generator', () => {
     let n
     let wstream
