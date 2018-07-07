@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.0 2018-07-07
+
+* `newFilename` function has `path` as its first argument.
+
 ## v0.5.0 2018-02-15
 
 * Implemented `_writev` method which corks file stream, then makes this writter

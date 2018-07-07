@@ -6,7 +6,7 @@ import { Writable } from 'stream'
 export interface FileTimestampStreamOptions {
   flags?: string
   fs?: typeof fs
-  newFilename?: () => string
+  newFilename?: (path: string) => string
   path?: string
 }
 

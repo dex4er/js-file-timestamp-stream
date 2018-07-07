@@ -12,34 +12,63 @@ to a file which is automatically rotated based on current time.
 npm install file-timestamp-stream
 ```
 
+_Additionally for Typescript:_
+
+```shell
+npm install -D @types/node
+```
+
 ## Usage
 
 _Example:_
 
 ```js
 const FileTimestampStream = require('file-timestamp-stream')
+```
 
+_Typescript:_
+
+```ts
+import FileTimestampStream from 'file-timestamp-stream'
+```
+
+### Options
+
+* `newFilename` is a custom function with path as an only argument which
+  returns new filename (default: returns new filename based on path and current
+  time)
+* `flags` is a string with
+  [flags](https://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback)
+  for opened stream (default: `'a'`)
+* `fs` is a custom [fs](https://nodejs.org/api/fs.html) module (optional)
+* `path` is a template for new filenames (default: `'out.log'`)
+
+_Example:_
+
+Basic path based on `strftime` parameters:
+
+```js
 const stream = new FileTimestampStream({
   path: '%Y-%m-%dT%H.log',
   flags: 'a'
 })
 ```
 
-_Typescript:_
+Custom filename generator:
 
 ```js
-import FileTimestampStream from 'file-timestamp-stream'
+let counter
+
+function newFilename (path) {
+  counter++
+  return `${path}.${counter}`
+}
+
+const stream = new FileTimestampStream({
+  path: 'out.log',
+  newFilename
+})
 ```
-
-### Options
-
-* `newFilename` is a custom function which returns new filename (default:
-  returns new filename based on path and current time)
-* `flags` is a string with
-  [flags](https://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback)
-  for opened stream (default: `'a'`)
-* `fs` is a custom [fs](https://nodejs.org/api/fs.html) module (optional)
-* `path` is a template for new filenames (default: `'out.log'`)
 
 ### Properties
 
