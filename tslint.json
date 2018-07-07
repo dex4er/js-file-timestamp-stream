@@ -4,8 +4,7 @@
     "tslint-config-standard"
   ],
   "rules": {
-    "max-line-length": false,
     "no-console": [true, "log"],
-    "no-unused-variable": false
+    "object-literal-sort-keys": false
   }
 }

@@ -57,17 +57,21 @@ const stream = new FileTimestampStream({
 Custom filename generator:
 
 ```js
-let counter
+const strftime = require('ultra-strftime')
 
-function newFilename (path) {
-  counter++
-  return `${path}.${counter}`
-}
+// count how many files was created
+let counter = 0
 
 const stream = new FileTimestampStream({
-  path: 'out.log',
+  path: '%Y-%m-%dT%H:%M.log',
   newFilename
 })
+
+function newFilename (path) {
+  const filename = strftime(path)
+  if (filename !== stream.currentFilename) counter++
+  return filename
+}
 ```
 
 ### Properties

@@ -1,12 +1,23 @@
 import FileTimestampStream from '../lib/file-timestamp-stream'
 
-const timestampStream = new FileTimestampStream({
-  flags: 'a',
-  path: './%Y-%m-%dT%H:%M:%S.log'
+import strftime from 'ultra-strftime'
+
+// count how many files was created
+let counter = 0
+
+const stream = new FileTimestampStream({
+  path: '%Y-%m-%dT%H:%M.log',
+  newFilename
 })
+
+function newFilename (path: string): string {
+  const filename = strftime(path)
+  if (filename !== stream.currentFilename) counter++
+  return filename
+}
 
 setInterval(() => {
   const date = new Date()
-  timestampStream.write(`tick: ${date}\r\n`)
-  console.info(`Written to ${timestampStream.currentFilename}`)
+  stream.write(`tick: ${date}\r\n`)
+  console.info(`Written to ${stream.currentFilename} (file #${counter})`)
 }, 800)
