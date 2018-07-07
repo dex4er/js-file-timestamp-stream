@@ -2,7 +2,9 @@
 
 process.env.TZ = 'GMT'
 
-const delay = require('delay')
+const promisify = require('util.promisify')
+
+const delay = promisify(setTimeout)
 
 const FileTimestampStream = require('../lib/file-timestamp-stream').FileTimestampStream
 const mockFs = require('../mock/mock-fs')
