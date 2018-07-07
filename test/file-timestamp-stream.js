@@ -2,10 +2,6 @@
 
 process.env.TZ = 'GMT'
 
-const promisify = require('util.promisify')
-
-const delay = promisify(setTimeout)
-
 const FileTimestampStream = require('../lib/file-timestamp-stream').FileTimestampStream
 const mockFs = require('../mock/mock-fs')
 
@@ -14,6 +10,12 @@ require('tap-given')(t)
 
 const chai = require('chai')
 chai.should()
+
+function delay (ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
 
 Feature('Test file-timestamp-stream module', () => {
   Scenario('Write lines to different files', () => {

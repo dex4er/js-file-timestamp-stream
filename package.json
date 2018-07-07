@@ -41,8 +41,7 @@
     "tap-given": "^0.6.0",
     "tslint": "^5.10.0",
     "tslint-config-standard": "^7.1.0",
-    "typescript": "^2.9.2",
-    "util.promisify": "^1.0.0"
+    "typescript": "^2.9.2"
   },
   "scripts": {
     "pretest": "eslint . && tsc --noEmit --pretty && tslint -t stylish -p . && echo markdownlint *.md",
