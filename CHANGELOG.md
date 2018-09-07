@@ -3,6 +3,7 @@
 ## v1.0.0 2018-09-07
 
 * Rewritten in Typescript.
+* Node >= 6 is required.
 * New syntax of import in plain Javascript.
 * `newFilename` function has `FileTimestampStream` object as its first argument.
 * Removed `options` property.

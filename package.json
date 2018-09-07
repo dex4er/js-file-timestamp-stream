@@ -20,7 +20,7 @@
   },
   "homepage": "http://github.com/dex4er/js-file-timestamp-stream",
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=6.0.0"
   },
   "dependencies": {
     "tslib": "^1.9.3",

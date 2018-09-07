@@ -8,6 +8,10 @@ This module creates
 [stream.Writable](https://nodejs.org/api/stream.html#stream_class_stream_writable)
 to a file which is automatically rotated based on current time.
 
+## Requirements
+
+This module requires ES6 with Node >= 6.
+
 ## Installation
 
 ```shell
