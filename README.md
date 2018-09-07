@@ -1,6 +1,8 @@
 # file-timestamp-stream
 
+<!-- markdownlint-disable MD013 -->
 [![Build Status](https://secure.travis-ci.org/dex4er/js-file-timestamp-stream.svg)](http://travis-ci.org/dex4er/js-file-timestamp-stream) [![Coverage Status](https://coveralls.io/repos/github/dex4er/js-file-timestamp-stream/badge.svg)](https://coveralls.io/github/dex4er/js-file-timestamp-stream) [![npm](https://img.shields.io/npm/v/file-timestamp-stream.svg)](https://www.npmjs.com/package/file-timestamp-stream)
+<!-- markdownlint-enable MD013 -->
 
 This module creates
 [stream.Writable](https://nodejs.org/api/stream.html#stream_class_stream_writable)
@@ -23,7 +25,7 @@ npm install -D @types/node
 _Example:_
 
 ```js
-const FileTimestampStream = require('file-timestamp-stream')
+const { FileTimestampStream } = require('file-timestamp-stream')
 ```
 
 _Typescript:_
@@ -32,9 +34,21 @@ _Typescript:_
 import FileTimestampStream from 'file-timestamp-stream'
 ```
 
+Transpiling this module with own settings in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "file-timestamp-stream": ["node_modules/file-timestamp-stream/src/file-timestamp-stream"]
+    }
+  }
+}
+```
+
 ### Options
 
-* `newFilename` is a custom function with path as an only argument which
+* `newFilename` is a custom function with this object as an only argument which
   returns new filename (default: returns new filename based on path and current
   time)
 * `flags` is a string with
@@ -67,9 +81,9 @@ const stream = new FileTimestampStream({
   newFilename
 })
 
-function newFilename (path) {
-  const filename = strftime(path)
-  if (filename !== stream.currentFilename) counter++
+function newFilename (fileTimestampStream) {
+  const filename = strftime(fileTimestampStream.path)
+  if (filename !== fileTimestampStream.currentFilename) counter++
   return filename
 }
 ```

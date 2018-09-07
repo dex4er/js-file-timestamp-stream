@@ -1,17 +1,11 @@
-'use strict'
+import { And, Feature, Given, Scenario, Then, When } from './lib/steps'
 
 process.env.TZ = 'GMT'
 
-const FileTimestampStream = require('../lib/file-timestamp-stream').FileTimestampStream
-const mockFs = require('../mock/mock-fs')
+import FileTimestampStream from '../src/file-timestamp-stream'
+import mockFs, { MockWriteStream } from './lib/mock-fs'
 
-const t = require('tap')
-require('tap-given')(t)
-
-const chai = require('chai')
-chai.should()
-
-function delay (ms) {
+function delay (ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms)
   })
@@ -19,16 +13,16 @@ function delay (ms) {
 
 Feature('Test file-timestamp-stream module', () => {
   Scenario('Write lines to different files', () => {
-    let filename1
-    let filename2
+    let filename1: string
+    let filename2: string
     let finished = false
-    let wstream
+    let wstream: FileTimestampStream
 
     Given('stream created with %S specifier', () => {
       wstream = new FileTimestampStream({
         path: '%Y-%m-%dT%H:%M:%S.log',
         flags: 'x',
-        fs: mockFs
+        fs: mockFs as any
       })
       wstream.on('finish', () => {
         finished = true
@@ -41,16 +35,19 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains first part of content', () => {
-      wstream.stream.content.toString().should.equal('content1\r\n')
+      const stream = wstream.stream as MockWriteStream
+      stream.content.toString().should.equal('content1\r\n')
     })
 
     And('stream has defined filename', () => {
-      filename1 = wstream.stream.filename
+      const stream = wstream.stream as MockWriteStream
+      filename1 = stream.filename
       return filename1.should.be.ok
     })
 
     And('stream has correct flags', () => {
-      wstream.stream.options.flags.should.equal('x')
+      const stream = wstream.stream as MockWriteStream
+      stream.options.flags!.should.equal('x')
     })
 
     When('I wait more than one second', () => {
@@ -62,16 +59,19 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains second part of content', () => {
-      wstream.stream.content.toString().should.equal('content2\r\n')
+      const stream = wstream.stream as MockWriteStream
+      stream.content.toString().should.equal('content2\r\n')
     })
 
     And('stream has defined another filename', () => {
-      filename2 = wstream.stream.filename
+      const stream = wstream.stream as MockWriteStream
+      filename2 = stream.filename
       return filename2.should.be.ok
     })
 
     And('stream has correct flags', () => {
-      wstream.stream.options.flags.should.equal('x')
+      const stream = wstream.stream as MockWriteStream
+      stream.options.flags!.should.equal('x')
     })
 
     And('stream has new filename different than previous', () => {
@@ -86,23 +86,23 @@ Feature('Test file-timestamp-stream module', () => {
       return finished.should.be.true
     })
 
-    if (typeof wstream.destroy === 'function') {
-      And('stream can be destroyed', () => {
+    And('stream can be destroyed', () => {
+      if (typeof wstream.destroy === 'function') {
         wstream.destroy()
-      })
-    }
+      }
+    })
   })
 
   Scenario('Write corked lines to the same file', () => {
-    let filename
+    let filename: string
     let finished = false
-    let wstream
+    let wstream: FileTimestampStream
 
     Given('stream created with %S specifier', () => {
       wstream = new FileTimestampStream({
         path: '%Y-%m-%dT%H:%M:%S.log',
         flags: 'x',
-        fs: mockFs
+        fs: mockFs as any
       })
       wstream.on('finish', () => {
         finished = true
@@ -135,16 +135,19 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains all parts of content', () => {
-      wstream.stream.content.toString().should.equal('content1\r\ncontent2\r\n')
+      const stream = wstream.stream as MockWriteStream
+      stream.content.toString().should.equal('content1\r\ncontent2\r\n')
     })
 
     And('stream has defined filename', () => {
-      filename = wstream.stream.filename
+      const stream = wstream.stream as MockWriteStream
+      filename = stream.filename
       return filename.should.be.ok
     })
 
     And('stream has correct flags', () => {
-      wstream.stream.options.flags.should.equal('x')
+      const stream = wstream.stream as MockWriteStream
+      stream.options.flags!.should.equal('x')
     })
 
     When('I finish stream', (done) => {
@@ -155,16 +158,16 @@ Feature('Test file-timestamp-stream module', () => {
       return finished.should.be.true
     })
 
-    if (typeof wstream.destroy === 'function') {
-      And('stream can be destroyed', () => {
+    And('stream can be destroyed', () => {
+      if (typeof wstream.destroy === 'function') {
         wstream.destroy()
-      })
-    }
+      }
+    })
   })
 
   Scenario('Custom filename generator', () => {
-    let n
-    let wstream
+    let n: number
+    let wstream: FileTimestampStream
 
     Given('counter', () => {
       n = 0
@@ -175,7 +178,7 @@ Feature('Test file-timestamp-stream module', () => {
         newFilename: () => {
           return Math.floor(n++ / 2) + '.log'
         },
-        fs: mockFs
+        fs: mockFs as any
       })
 
       wstream.should.have.property('pipe').that.is.a('function')
@@ -186,11 +189,13 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains first part of content', () => {
-      wstream.stream.content.toString().should.equal('content1\r\n')
+      const stream = wstream.stream as MockWriteStream
+      stream.content.toString().should.equal('content1\r\n')
     })
 
     And('stream has correct filename', () => {
-      wstream.stream.filename.should.equal('0.log')
+      const stream = wstream.stream as MockWriteStream
+      stream.filename.should.equal('0.log')
     })
 
     When('I write second part of content to stream', (done) => {
@@ -198,11 +203,13 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains both parts of content', () => {
-      wstream.stream.content.toString().should.equal('content1\r\ncontent2\r\n')
+      const stream = wstream.stream as MockWriteStream
+      stream.content.toString().should.equal('content1\r\ncontent2\r\n')
     })
 
     And('stream has unchanged filename', () => {
-      wstream.stream.filename.should.equal('0.log')
+      const stream = wstream.stream as MockWriteStream
+      stream.filename.should.equal('0.log')
     })
 
     When('I write third part of content to stream (this time with callback)', (done) => {
@@ -210,49 +217,41 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains only third part of content', () => {
-      wstream.stream.content.toString().should.equal('content3\r\n')
+      const stream = wstream.stream as MockWriteStream
+      stream.content.toString().should.equal('content3\r\n')
     })
 
     And('stream has new filename', () => {
-      wstream.stream.filename.should.equal('1.log')
+      const stream = wstream.stream as MockWriteStream
+      stream.filename.should.equal('1.log')
     })
   })
 
   Scenario('Default options', () => {
-    let wstream
+    let wstream: FileTimestampStream
 
-    Given('stream created with no options but overriden fs property', () => {
+    Given('stream created with no options', () => {
       wstream = new FileTimestampStream()
-      wstream.fs = mockFs
-
       wstream.should.have.property('pipe').that.is.a('function')
     })
 
-    When('I write fist part of content to stream', (done) => {
-      wstream.write(Buffer.from('content1\r\n'), done)
-    })
-
-    Then('file contains first part of content', () => {
-      wstream.stream.content.toString().should.equal('content1\r\n')
-    })
-
     And('stream has the default filename', () => {
-      wstream.stream.filename.should.equal('out.log')
+      wstream.path.should.equal('out.log')
     })
 
     Then('stream has the default flags', () => {
-      wstream.stream.options.flags.should.equal('a')
+      wstream.flags.should.equal('a')
     })
   })
 
   Scenario('Open error for write', () => {
-    let error
-    let wstream
+    let error: Error
+    let wstream: FileTimestampStream
 
     Given('stream with an error on open file', () => {
       wstream = new FileTimestampStream({
         path: 'badopen',
-        fs: mockFs
+        fs: mockFs as any
       })
 
       wstream.should.have.property('pipe').that.is.a('function')
@@ -274,13 +273,13 @@ Feature('Test file-timestamp-stream module', () => {
   })
 
   Scenario('Write error for write', () => {
-    let error
-    let wstream
+    let error: Error
+    let wstream: FileTimestampStream
 
     Given('stream with an error on write to file', () => {
       wstream = new FileTimestampStream({
         path: 'badwrite',
-        fs: mockFs
+        fs: mockFs as any
       })
 
       wstream.should.have.property('pipe').that.is.a('function')
@@ -302,10 +301,10 @@ Feature('Test file-timestamp-stream module', () => {
       error.should.have.property('message').that.equals('badwrite')
     })
 
-    if (typeof wstream.destroy === 'function') {
-      And('stream can be destroyed', () => {
+    And('stream can be destroyed', () => {
+      if (typeof wstream.destroy === 'function') {
         wstream.destroy()
-      })
-    }
+      }
+    })
   })
 })

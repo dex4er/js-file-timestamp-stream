@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.0.0 2018-09-07
+
+* Rewritten in Typescript.
+* New syntax of import in plain Javascript.
+* `newFilename` function has `FileTimestampStream` object as its first argument.
+* Removed `options` property.
+
 ## v0.6.0 2018-07-07
 
 * `newFilename` function has `path` as its first argument.

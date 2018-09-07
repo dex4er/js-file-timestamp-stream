@@ -1,6 +1,6 @@
-import FileTimestampStream from '../lib/file-timestamp-stream'
+const { FileTimestampStream } = require('../lib/file-timestamp-stream')
 
-import strftime from 'ultra-strftime'
+const strftime = require('ultra-strftime')
 
 // count how many files was created
 let counter = 0
@@ -10,9 +10,9 @@ const stream = new FileTimestampStream({
   newFilename
 })
 
-function newFilename (path: string): string {
-  const filename = strftime(path)
-  if (filename !== stream.currentFilename) counter++
+function newFilename (fileTimestampStream) {
+  const filename = strftime(fileTimestampStream.path)
+  if (filename !== fileTimestampStream.currentFilename) counter++
   return filename
 }
 

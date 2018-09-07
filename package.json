@@ -1,6 +1,6 @@
 {
   "name": "file-timestamp-stream",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "description": "Writing stream with file rotating based on timestamp",
   "main": "lib/file-timestamp-stream.js",
   "typings": "lib/file-timestamp-stream.d.ts",
@@ -23,44 +23,46 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
+    "tslib": "^1.9.3",
     "ultra-strftime": "^1.0.2"
   },
   "devDependencies": {
-    "@types/node": "^10.5.2",
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.9.4",
     "@types/ultra-strftime": "^1.0.0",
     "chai": "^4.1.2",
-    "eslint": "^5.0.1",
-    "eslint-config-standard": "^12.0.0-alpha.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.1.0",
-    "markdownlint-cli": "^0.10.0",
-    "standard": "^11.0.1",
-    "tap": "^12.0.1",
-    "tap-given": "^0.6.0",
-    "tslint": "^5.10.0",
-    "tslint-config-standard": "^7.1.0",
-    "typescript": "^2.9.2"
+    "eslint": "^5.5.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "markdownlint-cli": "^0.13.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.0.3"
   },
   "scripts": {
-    "pretest": "eslint . && tsc --noEmit --pretty && tslint -t stylish -p . && echo markdownlint *.md",
-    "test": "npm run test:api",
-    "test:api": "tap test/*.js",
-    "test:coverage": "npm test -- --coverage"
-  },
-  "standard": {
-    "globals": [
-      "After",
-      "And",
-      "Feature",
-      "Given",
-      "Scenario",
-      "Then",
-      "When"
-    ]
+    "build": "tsc --pretty",
+    "clean": "rimraf lib",
+    "postpublish": "git tag v$npm_package_version -a -m \"Release $npm_package_version\" && git push --tags",
+    "prepublishOnly": "npm run build",
+    "pretest": "npm run build && eslint . && tslint -t stylish -p . && markdownlint \"*.md\"",
+    "test": "npm run test:spec",
+    "test:spec": "npm run ts-mocha -- \"test/*.ts\"",
+    "test:coverage": "nyc --reporter json npm run test:spec && nyc report",
+    "ts-mocha": "mocha --use_strict --throw-deprecation --require source-map-support/register --require ts-node/register --timeout 90000"
   },
   "nyc": {
-    "exclude": []
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ]
   }
 }
