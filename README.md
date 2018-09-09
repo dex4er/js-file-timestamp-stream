@@ -24,6 +24,18 @@ _Additionally for Typescript:_
 npm install -D @types/node
 ```
 
+Transpiling this module with own settings in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "file-timestamp-stream": ["node_modules/file-timestamp-stream/src/file-timestamp-stream"]
+    }
+  }
+}
+```
+
 ## Usage
 
 _Example:_
@@ -36,18 +48,6 @@ _Typescript:_
 
 ```ts
 import FileTimestampStream from 'file-timestamp-stream'
-```
-
-Transpiling this module with own settings in `tsconfig.json`:
-
-```json
-{
-  "compilerOptions": {
-    "paths": {
-      "file-timestamp-stream": ["node_modules/file-timestamp-stream/src/file-timestamp-stream"]
-    }
-  }
-}
 ```
 
 ### Options

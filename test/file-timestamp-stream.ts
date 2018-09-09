@@ -87,6 +87,7 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     And('stream can be destroyed', () => {
+      // tslint:disable-next-line:strict-type-predicates
       if (typeof wstream.destroy === 'function') {
         wstream.destroy()
       }
@@ -159,6 +160,7 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     And('stream can be destroyed', () => {
+      // tslint:disable-next-line:strict-type-predicates
       if (typeof wstream.destroy === 'function') {
         wstream.destroy()
       }
@@ -302,6 +304,7 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     And('stream can be destroyed', () => {
+      // tslint:disable-next-line:strict-type-predicates
       if (typeof wstream.destroy === 'function') {
         wstream.destroy()
       }
