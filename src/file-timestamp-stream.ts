@@ -5,7 +5,7 @@ import { Writable, WritableOptions } from 'stream'
 import strftime from 'ultra-strftime'
 
 // tslint:disable-next-line:no-var-requires
-const finished = require('stream.finished') as (stream: NodeJS.ReadableStream | NodeJS.WritableStream | NodeJS.ReadWriteStream, callback?: (err: NodeJS.ErrnoException) => void) => () => void
+const finished = require('stream.finished') as (stream: NodeJS.ReadableStream | NodeJS.WritableStream | NodeJS.ReadWriteStream, callback?: (err: NodeJS.ErrnoException) => void) => () => void // TODO: wait for new typings for node
 
 // tslint:disable-next-line:strict-type-predicates
 const HAS_DESTROY = typeof Writable.prototype.destroy === 'function'
