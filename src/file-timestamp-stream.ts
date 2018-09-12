@@ -4,6 +4,12 @@ import fs from 'fs'
 import { Writable, WritableOptions } from 'stream'
 import strftime from 'ultra-strftime'
 
+// tslint:disable-next-line:no-var-requires
+const finished = require('stream.finished') as (stream: NodeJS.ReadableStream | NodeJS.WritableStream | NodeJS.ReadWriteStream, callback?: (err: NodeJS.ErrnoException) => void) => () => void
+
+// tslint:disable-next-line:strict-type-predicates
+const HAS_DESTROY = typeof Writable.prototype.destroy === 'function'
+
 export interface FileTimestampStreamOptions extends WritableOptions {
   flags?: string | null
   fs?: typeof fs
@@ -20,7 +26,9 @@ export class FileTimestampStream extends Writable {
   stream?: Writable
   newFilename: (fileTimestampStream: FileTimestampStream) => string
 
-  private streamErrorHandler: (err: Error) => void
+  private streams: Map<string, Writable> = new Map()
+  private streamCancelFinishers: Map<string, () => void> = new Map()
+  private streamErrorHandlers: Map<string, (err: Error) => void> = new Map()
 
   constructor (options: FileTimestampStreamOptions = {}) {
     super(options)
@@ -30,34 +38,11 @@ export class FileTimestampStream extends Writable {
     this.flags = options.flags || 'a'
     this.fs = options.fs || fs
     this.path = options.path || 'out.log'
-
-    this.streamErrorHandler = (err) => {
-      this.emit('error', err)
-    }
-  }
-
-  _rotate (): void {
-    const newFilename = this.newFilename(this)
-
-    if (newFilename !== this.currentFilename) {
-      if (this.stream) {
-        this.stream.end()
-        this.stream.removeListener('error', this.streamErrorHandler)
-      }
-
-      this.stream = this.fs.createWriteStream(newFilename, {
-        flags: this.flags
-      })
-
-      this.stream.on('error', this.streamErrorHandler)
-
-      this.currentFilename = newFilename
-    }
   }
 
   _write (chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
     try {
-      this._rotate()
+      this.rotate()
       this.stream!.write(chunk, encoding, callback)
     } catch (e) {
       callback(e)
@@ -67,7 +52,7 @@ export class FileTimestampStream extends Writable {
   _writev (chunks: Array<{ chunk: any, encoding: string }>, callback: (error?: Error | null) => void): void {
     let corked = false
     try {
-      this._rotate()
+      this.rotate()
       corked = true
       this.stream!.cork()
       for (const chunk of chunks) {
@@ -92,16 +77,79 @@ export class FileTimestampStream extends Writable {
   }
 
   _destroy (error: Error | null, callback: (error: Error | null) => void): void {
-    if (this.stream) {
-      this.stream.destroy()
-      this.stream.removeListener('error', this.streamErrorHandler)
-      delete this.streamErrorHandler
-      delete this.stream
+    if (this.streamErrorHandlers.size > 0) {
+      this.streamErrorHandlers.forEach((handler, filename) => {
+        const stream = this.streams.get(filename)
+        if (stream) {
+          stream.removeListener('error', handler)
+        }
+      })
+      this.streamErrorHandlers.clear()
     }
+    if (HAS_DESTROY) {
+      if (this.streamCancelFinishers.size > 0) {
+        this.streamCancelFinishers.forEach((cancel, filename) => {
+          cancel()
+          this.streamCancelFinishers.delete(filename)
+        })
+        this.streamCancelFinishers.clear()
+      }
+    }
+    if (this.streams.size > 0) {
+      this.streams.forEach((stream) => {
+        stream.destroy()
+      })
+      this.streams.clear()
+    }
+
+    this.stream = undefined
+
     this.newFilename = (_fileTimestampStream: any) => {
       throw new Error('write after destroy')
     }
+
     callback(error)
+  }
+
+  private rotate (): void {
+    const newFilename = this.newFilename(this)
+
+    if (newFilename !== this.currentFilename) {
+      if (this.currentFilename && this.stream) {
+        this.stream.end()
+        const streamErrorHandler = this.streamErrorHandlers.get(this.currentFilename)
+        if (streamErrorHandler) {
+          this.stream.removeListener('error', streamErrorHandler)
+          this.streamErrorHandlers.delete(this.currentFilename)
+        }
+        if (!HAS_DESTROY) {
+          this.streams.delete(this.currentFilename)
+        }
+      }
+
+      const newStream = this.fs.createWriteStream(newFilename, {
+        flags: this.flags
+      })
+      this.stream = newStream
+      this.streams.set(newFilename, newStream)
+
+      const newStreamErrorHandler = (err: Error) => {
+        this.emit('error', err)
+      }
+      newStream.on('error', newStreamErrorHandler)
+      this.streamErrorHandlers.set(newFilename, newStreamErrorHandler)
+
+      if (HAS_DESTROY) {
+        const newStreamCancelFinisher = finished(newStream, () => {
+          newStream.destroy()
+          this.streamCancelFinishers.delete(newFilename)
+          this.streams.delete(newFilename)
+        })
+        this.streamCancelFinishers.set(newFilename, newStreamCancelFinisher)
+      }
+
+      this.currentFilename = newFilename
+    }
   }
 }
 
