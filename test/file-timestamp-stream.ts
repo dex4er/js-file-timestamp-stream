@@ -293,10 +293,8 @@ Feature('Test file-timestamp-stream module', () => {
       })
     })
 
-    When('I try to write something to stream', (done) => {
-      wstream.write(Buffer.from('something'), () => {
-        done()
-      })
+    When('I try to write something to stream', () => {
+      wstream.write(Buffer.from('something'))
     })
 
     Then("an error was because can't write to file", () => {
