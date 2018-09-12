@@ -1,6 +1,6 @@
 /// <reference types="node" />
 
-import fs from 'fs'
+import fs, { WriteStream } from 'fs'
 import { Writable, WritableOptions } from 'stream'
 import strftime from 'ultra-strftime'
 
@@ -8,7 +8,7 @@ import strftime from 'ultra-strftime'
 const finished = require('stream.finished') as (stream: NodeJS.ReadableStream | NodeJS.WritableStream | NodeJS.ReadWriteStream, callback?: (err: NodeJS.ErrnoException) => void) => () => void // TODO: wait for new typings for node
 
 // tslint:disable-next-line:strict-type-predicates
-const HAS_DESTROY = typeof Writable.prototype.destroy === 'function'
+const HAS_DESTROY = typeof WriteStream.prototype.destroy === 'function'
 
 export interface FileTimestampStreamOptions extends WritableOptions {
   flags?: string | null
@@ -23,10 +23,10 @@ export class FileTimestampStream extends Writable {
   readonly path: string
 
   currentFilename?: string
-  stream?: Writable
+  stream?: WriteStream
   newFilename: (fileTimestampStream: FileTimestampStream) => string
 
-  private streams: Map<string, Writable> = new Map()
+  private streams: Map<string, WriteStream> = new Map()
   private streamCancelFinishers: Map<string, () => void> = new Map()
   private streamErrorHandlers: Map<string, (err: Error) => void> = new Map()
 
@@ -70,10 +70,9 @@ export class FileTimestampStream extends Writable {
 
   _final (callback: (error?: Error | null) => void): void {
     if (this.stream) {
-      this.stream.end(callback)
-    } else {
-      callback()
+      this.stream.close()
     }
+    callback()
   }
 
   _destroy (error: Error | null, callback: (error: Error | null) => void): void {
@@ -116,7 +115,7 @@ export class FileTimestampStream extends Writable {
 
     if (newFilename !== this.currentFilename) {
       if (this.currentFilename && this.stream) {
-        this.stream.end()
+        this.stream.close()
         const streamErrorHandler = this.streamErrorHandlers.get(this.currentFilename)
         if (streamErrorHandler) {
           this.stream.removeListener('error', streamErrorHandler)

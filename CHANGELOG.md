@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.2.0 2018-09-12
+
+* New streams are `WriteStream` so `close` method can be used instead `end`.
+
 ## v1.1.0 2018-09-12
 
 * Clean up streams more carefully after they are not needed anymore.

@@ -35,18 +35,18 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains first part of content', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.content.toString().should.equal('content1\r\n')
     })
 
     And('stream has defined filename', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       filename1 = stream.filename
       return filename1.should.be.ok
     })
 
     And('stream has correct flags', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.options.flags!.should.equal('x')
     })
 
@@ -59,18 +59,18 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains second part of content', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.content.toString().should.equal('content2\r\n')
     })
 
     And('stream has defined another filename', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       filename2 = stream.filename
       return filename2.should.be.ok
     })
 
     And('stream has correct flags', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.options.flags!.should.equal('x')
     })
 
@@ -136,18 +136,18 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains all parts of content', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.content.toString().should.equal('content1\r\ncontent2\r\n')
     })
 
     And('stream has defined filename', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       filename = stream.filename
       return filename.should.be.ok
     })
 
     And('stream has correct flags', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.options.flags!.should.equal('x')
     })
 
@@ -191,12 +191,12 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains first part of content', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.content.toString().should.equal('content1\r\n')
     })
 
     And('stream has correct filename', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.filename.should.equal('0.log')
     })
 
@@ -205,12 +205,12 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains both parts of content', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.content.toString().should.equal('content1\r\ncontent2\r\n')
     })
 
     And('stream has unchanged filename', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.filename.should.equal('0.log')
     })
 
@@ -219,12 +219,12 @@ Feature('Test file-timestamp-stream module', () => {
     })
 
     Then('file contains only third part of content', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.content.toString().should.equal('content3\r\n')
     })
 
     And('stream has new filename', () => {
-      const stream = wstream.stream as MockWriteStream
+      const stream: MockWriteStream = wstream.stream as any
       stream.filename.should.equal('1.log')
     })
   })

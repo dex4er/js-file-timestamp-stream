@@ -1,12 +1,23 @@
-import { Writable, WritableOptions } from 'stream'
+import { Writable } from 'stream'
 
-import { FileTimestampStreamOptions } from '../../src/file-timestamp-stream'
+interface MockWriteStreamOptions {
+  flags?: string
+  encoding?: string
+  fd?: number
+  mode?: number
+  autoClose?: boolean
+  start?: number
+}
 
 export class MockWriteStream extends Writable {
   content = Buffer.alloc(0)
 
-  constructor (public filename: string, public options: FileTimestampStreamOptions) {
+  constructor (public filename: string, public options: MockWriteStreamOptions) {
     super()
+  }
+
+  close (): void {
+    // ignore
   }
 
   _write (chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {
@@ -19,7 +30,7 @@ export class MockWriteStream extends Writable {
   }
 }
 
-export function createWriteStream (filename: string, options: WritableOptions): MockWriteStream {
+export function createWriteStream (filename: string, options: MockWriteStreamOptions): MockWriteStream {
   if (filename === 'badopen') {
     throw new Error('badopen')
   } else {
