@@ -17,7 +17,7 @@ export class MockWriteStream extends Writable {
   }
 
   close (): void {
-    // ignore
+    this.end()
   }
 
   _write (chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {

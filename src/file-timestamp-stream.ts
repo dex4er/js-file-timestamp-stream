@@ -8,7 +8,7 @@ import strftime from 'ultra-strftime'
 const finished = require('stream.finished') as (stream: NodeJS.ReadableStream | NodeJS.WritableStream | NodeJS.ReadWriteStream, callback?: (err: NodeJS.ErrnoException) => void) => () => void // TODO: wait for new typings for node
 
 // tslint:disable-next-line:strict-type-predicates
-const HAS_DESTROY = typeof WriteStream.prototype.destroy === 'function'
+const HAS_DESTROY = typeof Writable.prototype.destroy === 'function'
 
 export interface FileTimestampStreamOptions extends WritableOptions {
   flags?: string | null
@@ -95,9 +95,11 @@ export class FileTimestampStream extends Writable {
       }
     }
     if (this.streams.size > 0) {
-      this.streams.forEach((stream) => {
-        stream.destroy()
-      })
+      if (HAS_DESTROY) {
+        this.streams.forEach((stream) => {
+          stream.destroy()
+        })
+      }
       this.streams.clear()
     }
 
