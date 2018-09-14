@@ -103,6 +103,7 @@ export class FileTimestampStream extends Writable {
     }
     if (this.streams.size > 0) {
       for (const stream of this.streams.values()) {
+        // tslint:disable-next-line:strict-type-predicates
         if (typeof stream.destroy === 'function') {
           stream.destroy()
         }
