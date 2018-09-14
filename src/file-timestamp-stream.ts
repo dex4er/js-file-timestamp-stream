@@ -125,7 +125,7 @@ export class FileTimestampStream extends Writable {
 
     if (newFilename !== this.currentFilename) {
       if (this.currentFilename && this.stream) {
-        this.stream.close()
+        this.stream.end()
         const streamErrorHandler = this.streamErrorHandlers.get(this.currentFilename)
         if (streamErrorHandler) {
           this.stream.removeListener('error', streamErrorHandler)
