@@ -2,6 +2,7 @@
 
 import fs, { WriteStream } from 'fs'
 import { Writable, WritableOptions } from 'stream'
+import { interval, Interval } from 'timers-obj'
 import strftime from 'ultra-strftime'
 
 // tslint:disable-next-line:no-var-requires
@@ -28,6 +29,8 @@ export class FileTimestampStream extends Writable {
   private streams: Map<string, WriteStream> = new Map()
   private streamCancelFinishers: Map<string, () => void> = new Map()
   private streamErrorHandlers: Map<string, (err: Error) => void> = new Map()
+  private timer?: Interval
+  private timers: Map<string, Interval> = new Map()
 
   constructor (options: FileTimestampStreamOptions = {}) {
     super(options)
@@ -83,34 +86,39 @@ export class FileTimestampStream extends Writable {
 
   _destroy (error: Error | null, callback: (error: Error | null) => void): void {
     if (this.streamErrorHandlers.size > 0) {
-      this.streamErrorHandlers.forEach((handler, filename) => {
+      for (const [filename, handler] of this.streamErrorHandlers) {
         const stream = this.streams.get(filename)
         if (stream) {
           stream.removeListener('error', handler)
         }
-      })
+      }
       this.streamErrorHandlers.clear()
     }
-    if (HAS_DESTROY) {
-      if (this.streamCancelFinishers.size > 0) {
-        this.streamCancelFinishers.forEach((cancel, filename) => {
-          cancel()
-          this.streamCancelFinishers.delete(filename)
-        })
-        this.streamCancelFinishers.clear()
+    if (this.streamCancelFinishers.size > 0) {
+      for (const [filename, cancel] of this.streamCancelFinishers) {
+        cancel()
+        this.streamCancelFinishers.delete(filename)
       }
+      this.streamCancelFinishers.clear()
     }
     if (this.streams.size > 0) {
-      if (HAS_DESTROY) {
-        this.streams.forEach((stream) => {
+      for (const stream of this.streams.values()) {
+        if (typeof stream.destroy === 'function') {
           stream.destroy()
-        })
+        }
+      }
+      this.streams.clear()
+    }
+    if (this.timers.size > 0) {
+      for (const timer of this.timers.values()) {
+        timer.remove()
       }
       this.streams.clear()
     }
 
     this.destroyed = true
     this.stream = undefined
+    this.timer = undefined
 
     callback(error)
   }
@@ -122,17 +130,23 @@ export class FileTimestampStream extends Writable {
 
   private rotate (): void {
     const newFilename = this.newFilename()
+    const { currentFilename, stream, timer } = this
 
-    if (newFilename !== this.currentFilename) {
-      if (this.currentFilename && this.stream) {
-        this.stream.end()
-        const streamErrorHandler = this.streamErrorHandlers.get(this.currentFilename)
+    if (newFilename !== currentFilename) {
+      if (currentFilename && stream && timer) {
+        timer.remove()
+        stream.end()
+
+        const streamErrorHandler = this.streamErrorHandlers.get(currentFilename)
+
         if (streamErrorHandler) {
-          this.stream.removeListener('error', streamErrorHandler)
-          this.streamErrorHandlers.delete(this.currentFilename)
+          stream.removeListener('error', streamErrorHandler)
+          this.streamErrorHandlers.delete(currentFilename)
         }
+
         if (!HAS_DESTROY) {
-          this.streams.delete(this.currentFilename)
+          this.streams.delete(currentFilename)
+          this.timers.delete(currentFilename)
         }
       }
 
@@ -148,8 +162,22 @@ export class FileTimestampStream extends Writable {
       newStream.on('error', newStreamErrorHandler)
       this.streamErrorHandlers.set(newFilename, newStreamErrorHandler)
 
+      const newTimer = interval(1000, () => {
+        if (newFilename !== this.newFilename()) {
+          newTimer.remove()
+          this.timers.delete(newFilename)
+
+          newStream.end()
+        }
+      })
+      this.timer = timer
+      this.timers.set(newFilename, newTimer)
+
       if (HAS_DESTROY) {
         const newStreamCancelFinisher = finished(newStream, () => {
+          newTimer.remove()
+          this.timers.delete(newFilename)
+
           newStream.destroy()
           this.streamCancelFinishers.delete(newFilename)
           this.streams.delete(newFilename)

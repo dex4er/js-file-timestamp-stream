@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.1.0 2018-09-14
+
+* Close file if its file name is already changed even if there is no new data
+  written: this check is made by interval timer.
+
 ## v2.0.0 2018-09-14
 
 * `newFilename` should be overriden in subclass so it is no argument for

@@ -64,5 +64,12 @@ Feature('Test file-timestamp-stream module', () => {
     And('stream has new filename', () => {
       wstream.mockStream.filename.should.equal('1.log')
     })
+
+    And('stream can be destroyed', () => {
+      // tslint:disable-next-line:strict-type-predicates
+      if (typeof wstream.destroy === 'function') {
+        wstream.destroy()
+      }
+    })
   })
 })
