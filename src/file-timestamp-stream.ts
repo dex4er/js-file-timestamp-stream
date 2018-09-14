@@ -75,9 +75,10 @@ export class FileTimestampStream extends Writable {
 
   _final (callback: (error?: Error | null) => void): void {
     if (this.stream) {
-      this.stream.close()
+      this.stream.end(callback)
+    } else {
+      callback()
     }
-    callback()
   }
 
   _destroy (error: Error | null, callback: (error: Error | null) => void): void {

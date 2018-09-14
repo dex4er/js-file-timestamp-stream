@@ -4,6 +4,7 @@
 
 * `newFilename` should be overriden in subclass so it is no argument for
   constructor anymore.
+* `_final` calls rather `stream.end` than `close` because of callback.
 
 ## v1.2.0 2018-09-12
 
