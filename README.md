@@ -78,18 +78,19 @@ filename based on path and current time.
 
 _Example:_
 
-```js
-const strftime = require('ultra-strftime')
+```ts
+import strftime from 'ultra-strftime'
 
 class MyFileTimestampStream extends FileTimestampStream {
-  constructor (options) {
-    super(options)
-    /** count how many files has been created */
-    this.counter = 0
-  }
-  function newFilename () {
+  /** count how many files has been created */
+  counter = 0
+
+  // for pure Javascript explicit constructor is necessary
+  // constructor (options) { super(options); this.counter = 0 }
+
+  protected newFilename (): string {
     const filename = strftime(this.path)
-    if (filename !== this.currentFilename) counter++
+    if (filename !== this.currentFilename) this.counter++
     return filename
   }
 }
