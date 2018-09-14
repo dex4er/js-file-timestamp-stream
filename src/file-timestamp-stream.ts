@@ -13,7 +13,6 @@ const HAS_DESTROY = typeof Writable.prototype.destroy === 'function'
 export interface FileTimestampStreamOptions extends WritableOptions {
   flags?: string | null
   fs?: typeof fs
-  newFilename?: (fileTimestampStream: FileTimestampStream) => string
   path?: string
 }
 
@@ -22,10 +21,10 @@ export class FileTimestampStream extends Writable {
   readonly fs: typeof fs
   readonly path: string
 
-  currentFilename?: string
-  stream?: WriteStream
-  newFilename: (fileTimestampStream: FileTimestampStream) => string
+  protected currentFilename?: string
+  protected stream?: WriteStream
 
+  private destroyed = false
   private streams: Map<string, WriteStream> = new Map()
   private streamCancelFinishers: Map<string, () => void> = new Map()
   private streamErrorHandlers: Map<string, (err: Error) => void> = new Map()
@@ -33,14 +32,16 @@ export class FileTimestampStream extends Writable {
   constructor (options: FileTimestampStreamOptions = {}) {
     super(options)
 
-    this.newFilename = options.newFilename || defaultNewFilename
-
     this.flags = options.flags || 'a'
     this.fs = options.fs || fs
     this.path = options.path || 'out.log'
   }
 
   _write (chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
+    if (this.destroyed) {
+      return callback(new Error('write after destroy'))
+    }
+
     try {
       this.rotate()
       this.stream!.write(chunk, encoding, callback)
@@ -50,6 +51,10 @@ export class FileTimestampStream extends Writable {
   }
 
   _writev (chunks: Array<{ chunk: any, encoding: string }>, callback: (error?: Error | null) => void): void {
+    if (this.destroyed) {
+      return callback(new Error('write after destroy'))
+    }
+
     let corked = false
     try {
       this.rotate()
@@ -103,17 +108,19 @@ export class FileTimestampStream extends Writable {
       this.streams.clear()
     }
 
+    this.destroyed = true
     this.stream = undefined
-
-    this.newFilename = (_fileTimestampStream: any) => {
-      throw new Error('write after destroy')
-    }
 
     callback(error)
   }
 
+  /** Override this */
+  protected newFilename (): string {
+    return strftime(this.path, new Date())
+  }
+
   private rotate (): void {
-    const newFilename = this.newFilename(this)
+    const newFilename = this.newFilename()
 
     if (newFilename !== this.currentFilename) {
       if (this.currentFilename && this.stream) {
@@ -152,10 +159,6 @@ export class FileTimestampStream extends Writable {
       this.currentFilename = newFilename
     }
   }
-}
-
-function defaultNewFilename (fileTimestampStream: FileTimestampStream): string {
-  return strftime(fileTimestampStream.path, new Date())
 }
 
 export default FileTimestampStream

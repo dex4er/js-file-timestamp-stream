@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.0 2018-09-14
+
+* `newFilename` should be overriden in subclass so it is no argument for
+  constructor anymore.
+
 ## v1.2.0 2018-09-12
 
 * New streams are `WriteStream` so `close` method can be used instead `end`.

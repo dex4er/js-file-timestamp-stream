@@ -52,9 +52,6 @@ import FileTimestampStream from 'file-timestamp-stream'
 
 ### Options
 
-* `newFilename` is a custom function with this object as an only argument which
-  returns new filename (default: returns new filename based on path and current
-  time)
 * `flags` is a string with
   [flags](https://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback)
   for opened stream (default: `'a'`)
@@ -72,27 +69,45 @@ const stream = new FileTimestampStream({
 })
 ```
 
-Custom filename generator:
+### newFilename
+
+This method can be overriden in subclass.
+
+The method generates a filename for new files. By default it returns new
+filename based on path and current time.
+
+_Example:_
 
 ```js
 const strftime = require('ultra-strftime')
 
-// count how many files was created
-let counter = 0
-
-const stream = new FileTimestampStream({
-  path: '%Y-%m-%dT%H:%M.log',
-  newFilename
-})
-
-function newFilename (fileTimestampStream) {
-  const filename = strftime(fileTimestampStream.path)
-  if (filename !== fileTimestampStream.currentFilename) counter++
-  return filename
+class MyFileTimestampStream extends FileTimestampStream {
+  constructor (options) {
+    super(options)
+    /** count how many files has been created */
+    this.counter = 0
+  }
+  function newFilename () {
+    const filename = strftime(this.path)
+    if (filename !== this.currentFilename) counter++
+    return filename
+  }
 }
+
+const stream = new MyFileTimestampStream({
+  path: '%Y-%m-%dT%H:%M.log'
+})
 ```
 
 ### Properties
+
+Readonly public properties based on contructor's options:
+
+* `flags`
+* `fs`
+* `path`
+
+Protected properties for custom subclass:
 
 * `currentFilename` contains last opened filename
 * `stream` contains

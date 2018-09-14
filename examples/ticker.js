@@ -6,22 +6,31 @@ const { FileTimestampStream } = require('../lib/file-timestamp-stream')
 
 const strftime = require('ultra-strftime')
 
-let lineCounter = 0
-let fileCounter = 0
+class MyFileTimestampStream extends FileTimestampStream {
+  constructor (options) {
+    super(options)
 
-const stream = new FileTimestampStream({
-  path: '%Y-%m-%dT%H:%M:%S.log',
-  newFilename
-})
+    this.lineCounter = 0
+    this.fileCounter = 0
+  }
 
-function newFilename (fileTimestampStream) {
-  const filename = strftime(fileTimestampStream.path)
-  if (filename !== fileTimestampStream.currentFilename) fileCounter++
-  return filename
+  countWrittenLines () {
+    console.info(`Written line #${++this.lineCounter} to ${this.currentFilename} (file #${this.fileCounter})`)
+  }
+
+  newFilename () {
+    const filename = strftime(this.path)
+    if (filename !== this.currentFilename) this.fileCounter++
+    return filename
+  }
 }
+
+const stream = new MyFileTimestampStream({
+  path: '%Y-%m-%dT%H:%M:%S.log'
+})
 
 setInterval(() => {
   const date = new Date()
   stream.write(`tick: ${date}\r\n`)
-  console.info(`Written line #${++lineCounter} to ${stream.currentFilename} (file #${fileCounter})`)
+  stream.countWrittenLines()
 }, 800)
