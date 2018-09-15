@@ -8,9 +8,6 @@ import strftime from 'ultra-strftime'
 // tslint:disable-next-line:no-var-requires
 const finished = require('stream.finished') as (stream: NodeJS.ReadableStream | NodeJS.WritableStream | NodeJS.ReadWriteStream, callback?: (err: NodeJS.ErrnoException) => void) => () => void // TODO: wait for new typings for node
 
-// tslint:disable-next-line:strict-type-predicates
-const HAS_DESTROY = typeof Writable.prototype.destroy === 'function'
-
 export interface FileTimestampStreamOptions extends WritableOptions {
   flags?: string | null
   fs?: typeof fs
@@ -18,6 +15,8 @@ export interface FileTimestampStreamOptions extends WritableOptions {
 }
 
 export class FileTimestampStream extends Writable {
+  static readonly CLOSE_UNUSED_FILE_AFTER = 1000
+
   readonly flags: string
   readonly fs: typeof fs
   readonly path: string
@@ -144,11 +143,6 @@ export class FileTimestampStream extends Writable {
           stream.removeListener('error', streamErrorHandler)
           this.streamErrorHandlers.delete(currentFilename)
         }
-
-        if (!HAS_DESTROY) {
-          this.streams.delete(currentFilename)
-          this.timers.delete(currentFilename)
-        }
       }
 
       const newStream = this.fs.createWriteStream(newFilename, {
@@ -163,7 +157,7 @@ export class FileTimestampStream extends Writable {
       newStream.on('error', newStreamErrorHandler)
       this.streamErrorHandlers.set(newFilename, newStreamErrorHandler)
 
-      const newTimer = interval(1000, () => {
+      const newTimer = interval(FileTimestampStream.CLOSE_UNUSED_FILE_AFTER, () => {
         if (newFilename !== this.newFilename()) {
           newTimer.remove()
           this.timers.delete(newFilename)
@@ -174,17 +168,18 @@ export class FileTimestampStream extends Writable {
       this.timer = timer
       this.timers.set(newFilename, newTimer)
 
-      if (HAS_DESTROY) {
-        const newStreamCancelFinisher = finished(newStream, () => {
-          newTimer.remove()
-          this.timers.delete(newFilename)
+      const newStreamCancelFinisher = finished(newStream, () => {
+        newTimer.remove()
+        this.timers.delete(newFilename)
 
+        // tslint:disable-next-line:strict-type-predicates
+        if (typeof newStream.destroy === 'function') {
           newStream.destroy()
-          this.streamCancelFinishers.delete(newFilename)
-          this.streams.delete(newFilename)
-        })
-        this.streamCancelFinishers.set(newFilename, newStreamCancelFinisher)
-      }
+        }
+        this.streamCancelFinishers.delete(newFilename)
+        this.streams.delete(newFilename)
+      })
+      this.streamCancelFinishers.set(newFilename, newStreamCancelFinisher)
 
       this.currentFilename = newFilename
     }
