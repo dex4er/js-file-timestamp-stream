@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.1.1 2018-09-17
+
+* Do not use `timers-obj` as far as pure NodeJS timers have better support for
+  debugging.
+
 ## v2.1.0 2018-09-17
 
 * Close file if its file name is already changed even if there is no new data

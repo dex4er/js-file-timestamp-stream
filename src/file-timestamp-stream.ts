@@ -2,7 +2,6 @@
 
 import fs, { WriteStream } from 'fs'
 import { Writable, WritableOptions } from 'stream'
-import { interval, Interval } from 'timers-obj'
 import strftime from 'ultra-strftime'
 
 // tslint:disable-next-line:no-var-requires
@@ -33,8 +32,8 @@ export class FileTimestampStream extends Writable {
   private streams: Map<string, WriteStream> = new Map()
   private streamCancelFinishers: Map<string, () => void> = new Map()
   private streamErrorHandlers: Map<string, (err: Error) => void> = new Map()
-  private closer?: Interval
-  private closers: Map<string, Interval> = new Map()
+  private closer?: NodeJS.Timer
+  private closers: Map<string, NodeJS.Timer> = new Map()
 
   constructor (options: FileTimestampStreamOptions = {}) {
     super(options)
@@ -115,8 +114,8 @@ export class FileTimestampStream extends Writable {
       this.streams.clear()
     }
     if (this.closers.size > 0) {
-      for (const timer of this.closers.values()) {
-        timer.remove()
+      for (const closer of this.closers.values()) {
+        clearInterval(closer)
       }
       this.streams.clear()
     }
@@ -144,7 +143,7 @@ export class FileTimestampStream extends Writable {
 
     if (newFilename !== currentFilename) {
       if (currentFilename && stream && closer) {
-        closer.remove()
+        clearInterval(closer)
         stream.end()
 
         const streamErrorHandler = this.streamErrorHandlers.get(currentFilename)
@@ -167,19 +166,19 @@ export class FileTimestampStream extends Writable {
       newStream.on('error', newStreamErrorHandler)
       this.streamErrorHandlers.set(newFilename, newStreamErrorHandler)
 
-      const newTimer = interval(FileTimestampStream.CLOSE_UNUSED_FILE_AFTER, () => {
+      const newCloser = setInterval(() => {
         if (newFilename !== this.newFilename()) {
-          newTimer.remove()
+          clearInterval(newCloser)
           this.closers.delete(newFilename)
 
           newStream.end()
         }
-      })
+      }, FileTimestampStream.CLOSE_UNUSED_FILE_AFTER)
       this.closer = closer
-      this.closers.set(newFilename, newTimer)
+      this.closers.set(newFilename, newCloser)
 
       const newStreamCancelFinisher = finished(newStream, () => {
-        newTimer.remove()
+        clearInterval(newCloser)
         this.closers.delete(newFilename)
 
         // tslint:disable-next-line:strict-type-predicates
