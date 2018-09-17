@@ -2,10 +2,8 @@
 
 import fs, { WriteStream } from 'fs'
 import { Writable, WritableOptions } from 'stream'
+import finished from 'stream.finished'
 import strftime from 'ultra-strftime'
-
-// tslint:disable-next-line:no-var-requires
-const finished = require('stream.finished') as (stream: NodeJS.ReadableStream | NodeJS.WritableStream | NodeJS.ReadWriteStream, callback?: (err: NodeJS.ErrnoException) => void) => () => void // TODO: wait for new typings for node
 
 export interface FileTimestampStreamOptions extends WritableOptions {
   /** a string with [flags](https://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback) for opened stream (default: `'a'`) */

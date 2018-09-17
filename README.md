@@ -120,6 +120,10 @@ Protected properties for custom subclass:
 
 Path can contain [strftime](https://www.npmjs.com/package/strftime) specifiers.
 
+### Warning
+
+This stream have to be closed to free own streams and timers.
+
 ## License
 
 Copyright (c) 2017-2018 Piotr Roszatycki <piotr.roszatycki@gmail.com>
