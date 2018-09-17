@@ -6,7 +6,8 @@
 
 This module creates
 [stream.Writable](https://nodejs.org/api/stream.html#stream_class_stream_writable)
-to a file which is automatically rotated based on current time.
+to a file which is automatically rotated based on current time and uses
+[strftime](https://www.npmjs.com/package/strftime) template for file names.
 
 ## Requirements
 
@@ -111,7 +112,7 @@ Readonly public properties based on contructor's options:
 Protected properties for custom subclass:
 
 * `currentFilename` contains last opened filename
-* `stream` contains
+* `stream` contains current
   [fs.WriteStream](https://nodejs.org/api/fs.html#fs_class_fs_writestream)
   object
 

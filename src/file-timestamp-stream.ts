@@ -9,8 +9,11 @@ import strftime from 'ultra-strftime'
 const finished = require('stream.finished') as (stream: NodeJS.ReadableStream | NodeJS.WritableStream | NodeJS.ReadWriteStream, callback?: (err: NodeJS.ErrnoException) => void) => () => void // TODO: wait for new typings for node
 
 export interface FileTimestampStreamOptions extends WritableOptions {
+  /** a string with [flags](https://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback) for opened stream (default: `'a'`) */
   flags?: string | null
+  /** a custom [fs](https://nodejs.org/api/fs.html) module (optional) */
   fs?: typeof fs
+  /** a template for new filenames (default: `'out.log'`) */
   path?: string
 }
 
@@ -21,15 +24,17 @@ export class FileTimestampStream extends Writable {
   readonly fs: typeof fs
   readonly path: string
 
+  /** contains last opened filename */
   protected currentFilename?: string
+  /** contains current [fs.WriteStream](https://nodejs.org/api/fs.html#fs_class_fs_writestream) object */
   protected stream?: WriteStream
 
   private destroyed = false
   private streams: Map<string, WriteStream> = new Map()
   private streamCancelFinishers: Map<string, () => void> = new Map()
   private streamErrorHandlers: Map<string, (err: Error) => void> = new Map()
-  private timer?: Interval
-  private timers: Map<string, Interval> = new Map()
+  private closer?: Interval
+  private closers: Map<string, Interval> = new Map()
 
   constructor (options: FileTimestampStreamOptions = {}) {
     super(options)
@@ -109,8 +114,8 @@ export class FileTimestampStream extends Writable {
       }
       this.streams.clear()
     }
-    if (this.timers.size > 0) {
-      for (const timer of this.timers.values()) {
+    if (this.closers.size > 0) {
+      for (const timer of this.closers.values()) {
         timer.remove()
       }
       this.streams.clear()
@@ -118,23 +123,28 @@ export class FileTimestampStream extends Writable {
 
     this.destroyed = true
     this.stream = undefined
-    this.timer = undefined
+    this.closer = undefined
 
     callback(error)
   }
 
-  /** Override this */
+  /**
+   * This method can be overriden in subclass
+   *
+   * The method generates a filename for new files. By default it returns new
+   * filename based on path and current time.
+   */
   protected newFilename (): string {
     return strftime(this.path, new Date())
   }
 
   private rotate (): void {
     const newFilename = this.newFilename()
-    const { currentFilename, stream, timer } = this
+    const { currentFilename, stream, closer } = this
 
     if (newFilename !== currentFilename) {
-      if (currentFilename && stream && timer) {
-        timer.remove()
+      if (currentFilename && stream && closer) {
+        closer.remove()
         stream.end()
 
         const streamErrorHandler = this.streamErrorHandlers.get(currentFilename)
@@ -160,17 +170,17 @@ export class FileTimestampStream extends Writable {
       const newTimer = interval(FileTimestampStream.CLOSE_UNUSED_FILE_AFTER, () => {
         if (newFilename !== this.newFilename()) {
           newTimer.remove()
-          this.timers.delete(newFilename)
+          this.closers.delete(newFilename)
 
           newStream.end()
         }
       })
-      this.timer = timer
-      this.timers.set(newFilename, newTimer)
+      this.closer = closer
+      this.closers.set(newFilename, newTimer)
 
       const newStreamCancelFinisher = finished(newStream, () => {
         newTimer.remove()
-        this.timers.delete(newFilename)
+        this.closers.delete(newFilename)
 
         // tslint:disable-next-line:strict-type-predicates
         if (typeof newStream.destroy === 'function') {

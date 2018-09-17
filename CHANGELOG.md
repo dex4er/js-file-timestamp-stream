@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.1.0 2018-09-14
+## v2.1.0 2018-09-17
 
 * Close file if its file name is already changed even if there is no new data
   written: this check is made by interval timer.
