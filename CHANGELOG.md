@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1.2 2018-09-18
+
+* Use stream.finished@1.1.1 with Typescript support.
+
 ## v2.1.1 2018-09-17
 
 * Do not use `timers-obj` as far as pure NodeJS timers have better support for
