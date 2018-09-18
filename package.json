@@ -23,7 +23,7 @@
     "node": ">=6.0.0"
   },
   "dependencies": {
-    "stream.finished": "^1.1.0",
+    "stream.finished": "^1.1.1",
     "tslib": "^1.9.3",
     "ultra-strftime": "^1.0.2"
   },
