@@ -126,6 +126,6 @@ This stream have to be closed to free own streams and timers.
 
 ## License
 
-Copyright (c) 2017-2018 Piotr Roszatycki <piotr.roszatycki@gmail.com>
+Copyright (c) 2017-2019 Piotr Roszatycki <piotr.roszatycki@gmail.com>
 
 [MIT](https://opensource.org/licenses/MIT)

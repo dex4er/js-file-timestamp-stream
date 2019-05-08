@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1.3 2019-05-08
+
+* Updated dependencies.
+
 ## v2.1.2 2018-09-18
 
 * Use stream.finished@1.1.1 with Typescript support.
