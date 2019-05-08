@@ -1,18 +1,18 @@
-import { And, Feature, Given, Scenario, Then, When } from './lib/steps'
+import {And, Feature, Given, Scenario, Then, When} from './lib/steps'
 
 process.env.TZ = 'GMT'
 
 import FileTimestampStream from '../src/file-timestamp-stream'
-import mockFs, { MockWriteStream } from './lib/mock-fs'
+import mockFs, {MockWriteStream} from './lib/mock-fs'
 
-function delay (ms: number): Promise<void> {
-  return new Promise((resolve) => {
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => {
     setTimeout(resolve, ms)
   })
 }
 
 class TestFileTimestampStream extends FileTimestampStream {
-  get mockStream (): MockWriteStream {
+  get mockStream(): MockWriteStream {
     return this.stream as any
   }
 }
@@ -45,7 +45,7 @@ Feature('Test file-timestamp-stream module', () => {
       wstream = new TestFileTimestampStream({
         path: '%Y-%m-%dT%H:%M:%S.log',
         flags: 'x',
-        fs: mockFs as any
+        fs: mockFs as any,
       })
       wstream.on('finish', () => {
         finished = true
@@ -53,7 +53,7 @@ Feature('Test file-timestamp-stream module', () => {
       wstream.should.have.property('pipe').that.is.a('function')
     })
 
-    When('I write first part of content to stream', (done) => {
+    When('I write first part of content to stream', done => {
       wstream.write(Buffer.from('content1\r\n'), done)
     })
 
@@ -74,7 +74,7 @@ Feature('Test file-timestamp-stream module', () => {
       return delay(1100)
     })
 
-    And('I write second part of content to the same stream', (done) => {
+    And('I write second part of content to the same stream', done => {
       wstream.write(Buffer.from('content2\r\n'), done)
     })
 
@@ -95,7 +95,7 @@ Feature('Test file-timestamp-stream module', () => {
       filename2.should.not.equal(filename1)
     })
 
-    When('I finish stream', (done) => {
+    When('I finish stream', done => {
       wstream.end(done)
     })
 
@@ -120,7 +120,7 @@ Feature('Test file-timestamp-stream module', () => {
       wstream = new TestFileTimestampStream({
         path: '%Y-%m-%dT%H:%M:%S.log',
         flags: 'x',
-        fs: mockFs as any
+        fs: mockFs as any,
       })
       wstream.on('finish', () => {
         finished = true
@@ -148,7 +148,7 @@ Feature('Test file-timestamp-stream module', () => {
       wstream.uncork()
     })
 
-    And('I flush a stream', (done) => {
+    And('I flush a stream', done => {
       wstream.write('', done)
     })
 
@@ -165,7 +165,7 @@ Feature('Test file-timestamp-stream module', () => {
       wstream.mockStream.options.flags!.should.equal('x')
     })
 
-    When('I finish stream', (done) => {
+    When('I finish stream', done => {
       wstream.end(done)
     })
 

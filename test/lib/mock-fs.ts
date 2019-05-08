@@ -1,4 +1,4 @@
-import { Writable } from 'stream'
+import {Writable} from 'stream'
 
 interface MockWriteStreamOptions {
   flags?: string
@@ -12,15 +12,15 @@ interface MockWriteStreamOptions {
 export class MockWriteStream extends Writable {
   content = Buffer.alloc(0)
 
-  constructor (public filename: string, public options: MockWriteStreamOptions) {
+  constructor(public filename: string, public options: MockWriteStreamOptions) {
     super()
   }
 
-  close (): void {
+  close(): void {
     this.end()
   }
 
-  _write (chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {
+  _write(chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {
     if (this.filename === 'badwrite') {
       callback(new Error('badwrite'))
     } else {
@@ -30,7 +30,7 @@ export class MockWriteStream extends Writable {
   }
 }
 
-export function createWriteStream (filename: string, options: MockWriteStreamOptions): MockWriteStream {
+export function createWriteStream(filename: string, options: MockWriteStreamOptions): MockWriteStream {
   if (filename === 'badopen') {
     throw new Error('badopen')
   } else {
@@ -39,7 +39,7 @@ export function createWriteStream (filename: string, options: MockWriteStreamOpt
 }
 
 const mockFs = {
-  createWriteStream
+  createWriteStream,
 }
 
 export default mockFs

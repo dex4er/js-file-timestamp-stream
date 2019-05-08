@@ -1,4 +1,4 @@
-import { And, Feature, Given, Scenario, Then, When } from './lib/steps'
+import {And, Feature, Given, Scenario, Then, When} from './lib/steps'
 
 process.env.TZ = 'GMT'
 
@@ -13,14 +13,14 @@ Feature('Test file-timestamp-stream module', () => {
     Given('stream with an error on open file', () => {
       wstream = new FileTimestampStream({
         path: 'badopen',
-        fs: mockFs as any
+        fs: mockFs as any,
       })
 
       wstream.should.have.property('pipe').that.is.a('function')
     })
 
     And('subscription on error event', () => {
-      wstream.on('error', (err) => {
+      wstream.on('error', err => {
         error = err
       })
     })
@@ -41,14 +41,14 @@ Feature('Test file-timestamp-stream module', () => {
     Given('stream with an error on write to file', () => {
       wstream = new FileTimestampStream({
         path: 'badwrite',
-        fs: mockFs as any
+        fs: mockFs as any,
       })
 
       wstream.should.have.property('pipe').that.is.a('function')
     })
 
     And('subscription on error event', () => {
-      wstream.on('error', (err) => {
+      wstream.on('error', err => {
         error = err
       })
     })

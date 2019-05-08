@@ -1,7 +1,7 @@
 /// <reference types="node" />
 
-import fs, { WriteStream } from 'fs'
-import { Writable, WritableOptions } from 'stream'
+import fs, {WriteStream} from 'fs'
+import {Writable, WritableOptions} from 'stream'
 import finished from 'stream.finished'
 import strftime from 'ultra-strftime'
 
@@ -33,7 +33,7 @@ export class FileTimestampStream extends Writable {
   private closer?: NodeJS.Timer
   private closers: Map<string, NodeJS.Timer> = new Map()
 
-  constructor (options: FileTimestampStreamOptions = {}) {
+  constructor(options: FileTimestampStreamOptions = {}) {
     super(options)
 
     this.flags = options.flags || 'a'
@@ -41,7 +41,7 @@ export class FileTimestampStream extends Writable {
     this.path = options.path || 'out.log'
   }
 
-  _write (chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
+  _write(chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
     if (this.destroyed) {
       return callback(new Error('write after destroy'))
     }
@@ -54,7 +54,7 @@ export class FileTimestampStream extends Writable {
     }
   }
 
-  _writev (chunks: Array<{ chunk: any, encoding: string }>, callback: (error?: Error | null) => void): void {
+  _writev(chunks: Array<{chunk: any; encoding: string}>, callback: (error?: Error | null) => void): void {
     if (this.destroyed) {
       return callback(new Error('write after destroy'))
     }
@@ -77,7 +77,7 @@ export class FileTimestampStream extends Writable {
     }
   }
 
-  _final (callback: (error?: Error | null) => void): void {
+  _final(callback: (error?: Error | null) => void): void {
     if (this.stream) {
       this.stream.end(callback)
     } else {
@@ -85,7 +85,7 @@ export class FileTimestampStream extends Writable {
     }
   }
 
-  _destroy (error: Error | null, callback: (error: Error | null) => void): void {
+  _destroy(error: Error | null, callback: (error: Error | null) => void): void {
     if (this.streamErrorHandlers.size > 0) {
       for (const [filename, handler] of this.streamErrorHandlers) {
         const stream = this.streams.get(filename)
@@ -131,13 +131,13 @@ export class FileTimestampStream extends Writable {
    * The method generates a filename for new files. By default it returns new
    * filename based on path and current time.
    */
-  protected newFilename (): string {
+  protected newFilename(): string {
     return strftime(this.path, new Date())
   }
 
-  private rotate (): void {
+  private rotate(): void {
     const newFilename = this.newFilename()
-    const { currentFilename, stream, closer } = this
+    const {currentFilename, stream, closer} = this
 
     if (newFilename !== currentFilename) {
       if (currentFilename && stream && closer) {
@@ -153,7 +153,7 @@ export class FileTimestampStream extends Writable {
       }
 
       const newStream = this.fs.createWriteStream(newFilename, {
-        flags: this.flags
+        flags: this.flags,
       })
       this.stream = newStream
       this.streams.set(newFilename, newStream)

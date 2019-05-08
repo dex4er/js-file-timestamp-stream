@@ -1,18 +1,18 @@
-import { And, Feature, Given, Scenario, Then, When } from './lib/steps'
+import {And, Feature, Given, Scenario, Then, When} from './lib/steps'
 
 process.env.TZ = 'GMT'
 
 import FileTimestampStream from '../src/file-timestamp-stream'
-import mockFs, { MockWriteStream } from './lib/mock-fs'
+import mockFs, {MockWriteStream} from './lib/mock-fs'
 
 class TestFileTimestampStream extends FileTimestampStream {
   n = 0
 
-  get mockStream (): MockWriteStream {
+  get mockStream(): MockWriteStream {
     return this.stream as any
   }
 
-  newFilename (): string {
+  newFilename(): string {
     return String(Math.floor(this.n++ / 2)) + '.log'
   }
 }
@@ -23,13 +23,13 @@ Feature('Test file-timestamp-stream module', () => {
 
     Given('stream created with custom filename generator which uses counter', () => {
       wstream = new TestFileTimestampStream({
-        fs: mockFs as any
+        fs: mockFs as any,
       })
 
       wstream.should.have.property('pipe').that.is.a('function')
     })
 
-    When('I write fist part of content to stream', (done) => {
+    When('I write fist part of content to stream', done => {
       wstream.write(Buffer.from('content1\r\n'), done)
     })
 
@@ -41,7 +41,7 @@ Feature('Test file-timestamp-stream module', () => {
       wstream.mockStream.filename.should.equal('0.log')
     })
 
-    When('I write second part of content to stream', (done) => {
+    When('I write second part of content to stream', done => {
       wstream.write(Buffer.from('content2\r\n'), done)
     })
 
@@ -53,7 +53,7 @@ Feature('Test file-timestamp-stream module', () => {
       wstream.mockStream.filename.should.equal('0.log')
     })
 
-    When('I write third part of content to stream (this time with callback)', (done) => {
+    When('I write third part of content to stream (this time with callback)', done => {
       wstream.write(Buffer.from('content3\r\n'), done)
     })
 
