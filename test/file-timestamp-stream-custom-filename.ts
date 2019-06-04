@@ -1,3 +1,5 @@
+import {expect} from "chai"
+
 import {And, Feature, Given, Scenario, Then, When} from "./lib/steps"
 
 process.env.TZ = "GMT"
@@ -26,7 +28,9 @@ Feature("Test file-timestamp-stream module", () => {
         fs: mockFs as any,
       })
 
-      wstream.should.have.property("pipe").that.is.a("function")
+      expect(wstream)
+        .to.have.property("pipe")
+        .that.is.a("function")
     })
 
     When("I write fist part of content to stream", done => {
@@ -34,11 +38,11 @@ Feature("Test file-timestamp-stream module", () => {
     })
 
     Then("file contains first part of content", () => {
-      wstream.mockStream.content.toString().should.equal("content1\r\n")
+      expect(wstream.mockStream.content.toString()).to.equal("content1\r\n")
     })
 
     And("stream has correct filename", () => {
-      wstream.mockStream.filename.should.equal("0.log")
+      expect(wstream.mockStream.filename).to.equal("0.log")
     })
 
     When("I write second part of content to stream", done => {
@@ -46,11 +50,11 @@ Feature("Test file-timestamp-stream module", () => {
     })
 
     Then("file contains both parts of content", () => {
-      wstream.mockStream.content.toString().should.equal("content1\r\ncontent2\r\n")
+      expect(wstream.mockStream.content.toString()).to.equal("content1\r\ncontent2\r\n")
     })
 
     And("stream has unchanged filename", () => {
-      wstream.mockStream.filename.should.equal("0.log")
+      expect(wstream.mockStream.filename).to.equal("0.log")
     })
 
     When("I write third part of content to stream (this time with callback)", done => {
@@ -58,11 +62,11 @@ Feature("Test file-timestamp-stream module", () => {
     })
 
     Then("file contains only third part of content", () => {
-      wstream.mockStream.content.toString().should.equal("content3\r\n")
+      expect(wstream.mockStream.content.toString()).to.equal("content3\r\n")
     })
 
     And("stream has new filename", () => {
-      wstream.mockStream.filename.should.equal("1.log")
+      expect(wstream.mockStream.filename).to.equal("1.log")
     })
 
     And("stream can be destroyed", () => {

@@ -1,3 +1,5 @@
+import {expect} from "chai"
+
 import {And, Feature, Given, Scenario, Then, When} from "./lib/steps"
 
 process.env.TZ = "GMT"
@@ -16,7 +18,9 @@ Feature("Test file-timestamp-stream module", () => {
         fs: mockFs as any,
       })
 
-      wstream.should.have.property("pipe").that.is.a("function")
+      expect(wstream)
+        .to.have.property("pipe")
+        .that.is.a("function")
     })
 
     And("subscription on error event", () => {
@@ -30,7 +34,9 @@ Feature("Test file-timestamp-stream module", () => {
     })
 
     Then("an error was because can't open file", () => {
-      error.should.have.property("message").that.equals("badopen")
+      expect(error)
+        .to.have.property("message")
+        .that.equals("badopen")
     })
   })
 
@@ -44,7 +50,9 @@ Feature("Test file-timestamp-stream module", () => {
         fs: mockFs as any,
       })
 
-      wstream.should.have.property("pipe").that.is.a("function")
+      expect(wstream)
+        .to.have.property("pipe")
+        .that.is.a("function")
     })
 
     And("subscription on error event", () => {
@@ -58,7 +66,9 @@ Feature("Test file-timestamp-stream module", () => {
     })
 
     Then("an error was because can't write to file", () => {
-      error.should.have.property("message").that.equals("badwrite")
+      expect(error)
+        .to.have.property("message")
+        .that.equals("badwrite")
     })
 
     And("stream can be destroyed", () => {
