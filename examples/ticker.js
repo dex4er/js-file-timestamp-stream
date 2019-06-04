@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-'use strict'
+"use strict"
 
-const {FileTimestampStream} = require('../lib/file-timestamp-stream')
+const {FileTimestampStream} = require("../lib/file-timestamp-stream")
 
-const strftime = require('ultra-strftime')
+const strftime = require("ultra-strftime")
 
 class MyFileTimestampStream extends FileTimestampStream {
   constructor(options) {
@@ -26,7 +26,7 @@ class MyFileTimestampStream extends FileTimestampStream {
 }
 
 const stream = new MyFileTimestampStream({
-  path: '%Y-%m-%dT%H:%M:%S.log',
+  path: "%Y-%m-%dT%H:%M:%S.log",
 })
 
 setInterval(() => {

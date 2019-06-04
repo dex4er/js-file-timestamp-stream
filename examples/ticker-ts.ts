@@ -1,8 +1,8 @@
 #!/usr/bin/env ts-node
 
-import FileTimestampStream from '../src/file-timestamp-stream'
+import FileTimestampStream from "../src/file-timestamp-stream"
 
-import strftime from 'ultra-strftime'
+import strftime from "ultra-strftime"
 
 class MyFileTimestampStream extends FileTimestampStream {
   lineCounter = 0
@@ -20,7 +20,7 @@ class MyFileTimestampStream extends FileTimestampStream {
 }
 
 const stream = new MyFileTimestampStream({
-  path: '%Y-%m-%dT%H:%M:%S.log',
+  path: "%Y-%m-%dT%H:%M:%S.log",
 })
 
 setInterval(() => {

@@ -1,1 +1,1 @@
-module.exports = require('./lib/file-timestamp-stream')
+module.exports = require("./lib/file-timestamp-stream")

@@ -1,9 +1,9 @@
 /// <reference types="node" />
 
-import fs, {WriteStream} from 'fs'
-import {Writable, WritableOptions} from 'stream'
-import finished from 'stream.finished'
-import strftime from 'ultra-strftime'
+import fs, {WriteStream} from "fs"
+import {Writable, WritableOptions} from "stream"
+import finished from "stream.finished"
+import strftime from "ultra-strftime"
 
 export interface FileTimestampStreamOptions extends WritableOptions {
   /** a string with [flags](https://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback) for opened stream (default: `'a'`) */
@@ -36,14 +36,14 @@ export class FileTimestampStream extends Writable {
   constructor(options: FileTimestampStreamOptions = {}) {
     super(options)
 
-    this.flags = options.flags || 'a'
+    this.flags = options.flags || "a"
     this.fs = options.fs || fs
-    this.path = options.path || 'out.log'
+    this.path = options.path || "out.log"
   }
 
   _write(chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
     if (this.destroyed) {
-      return callback(new Error('write after destroy'))
+      return callback(new Error("write after destroy"))
     }
 
     try {
@@ -56,7 +56,7 @@ export class FileTimestampStream extends Writable {
 
   _writev(chunks: Array<{chunk: any; encoding: string}>, callback: (error?: Error | null) => void): void {
     if (this.destroyed) {
-      return callback(new Error('write after destroy'))
+      return callback(new Error("write after destroy"))
     }
 
     let corked = false
@@ -90,7 +90,7 @@ export class FileTimestampStream extends Writable {
       for (const [filename, handler] of this.streamErrorHandlers) {
         const stream = this.streams.get(filename)
         if (stream) {
-          stream.removeListener('error', handler)
+          stream.removeListener("error", handler)
         }
       }
       this.streamErrorHandlers.clear()
@@ -104,7 +104,7 @@ export class FileTimestampStream extends Writable {
     }
     if (this.streams.size > 0) {
       for (const stream of this.streams.values()) {
-        if (typeof stream.destroy === 'function') {
+        if (typeof stream.destroy === "function") {
           stream.destroy()
         }
       }
@@ -146,7 +146,7 @@ export class FileTimestampStream extends Writable {
         const streamErrorHandler = this.streamErrorHandlers.get(currentFilename)
 
         if (streamErrorHandler) {
-          stream.removeListener('error', streamErrorHandler)
+          stream.removeListener("error", streamErrorHandler)
           this.streamErrorHandlers.delete(currentFilename)
         }
       }
@@ -158,9 +158,9 @@ export class FileTimestampStream extends Writable {
       this.streams.set(newFilename, newStream)
 
       const newStreamErrorHandler = (err: Error) => {
-        this.emit('error', err)
+        this.emit("error", err)
       }
-      newStream.on('error', newStreamErrorHandler)
+      newStream.on("error", newStreamErrorHandler)
       this.streamErrorHandlers.set(newFilename, newStreamErrorHandler)
 
       const newCloser = setInterval(() => {
@@ -178,7 +178,7 @@ export class FileTimestampStream extends Writable {
         clearInterval(newCloser)
         this.closers.delete(newFilename)
 
-        if (typeof newStream.destroy === 'function') {
+        if (typeof newStream.destroy === "function") {
           newStream.destroy()
         }
         this.streamCancelFinishers.delete(newFilename)

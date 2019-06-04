@@ -1,7 +1,9 @@
 # file-timestamp-stream
 
 <!-- markdownlint-disable MD013 -->
+
 [![Build Status](https://secure.travis-ci.org/dex4er/js-file-timestamp-stream.svg)](http://travis-ci.org/dex4er/js-file-timestamp-stream) [![Coverage Status](https://coveralls.io/repos/github/dex4er/js-file-timestamp-stream/badge.svg)](https://coveralls.io/github/dex4er/js-file-timestamp-stream) [![npm](https://img.shields.io/npm/v/file-timestamp-stream.svg)](https://www.npmjs.com/package/file-timestamp-stream)
+
 <!-- markdownlint-enable MD013 -->
 
 This module creates
@@ -42,22 +44,22 @@ Transpiling this module with own settings in `tsconfig.json`:
 _Example:_
 
 ```js
-const { FileTimestampStream } = require('file-timestamp-stream')
+const {FileTimestampStream} = require("file-timestamp-stream")
 ```
 
 _Typescript:_
 
 ```ts
-import FileTimestampStream from 'file-timestamp-stream'
+import FileTimestampStream from "file-timestamp-stream"
 ```
 
 ### Options
 
-* `flags` is a string with
+- `flags` is a string with
   [flags](https://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback)
   for opened stream (default: `'a'`)
-* `fs` is a custom [fs](https://nodejs.org/api/fs.html) module (optional)
-* `path` is a template for new filenames (default: `'out.log'`)
+- `fs` is a custom [fs](https://nodejs.org/api/fs.html) module (optional)
+- `path` is a template for new filenames (default: `'out.log'`)
 
 _Example:_
 
@@ -65,8 +67,8 @@ Basic path based on `strftime` parameters:
 
 ```js
 const stream = new FileTimestampStream({
-  path: '%Y-%m-%dT%H.log',
-  flags: 'a'
+  path: "%Y-%m-%dT%H.log",
+  flags: "a",
 })
 ```
 
@@ -80,7 +82,7 @@ filename based on path and current time.
 _Example:_
 
 ```ts
-import strftime from 'ultra-strftime'
+import strftime from "ultra-strftime"
 
 class MyFileTimestampStream extends FileTimestampStream {
   /** count how many files has been created */
@@ -89,7 +91,7 @@ class MyFileTimestampStream extends FileTimestampStream {
   // for pure Javascript explicit constructor is necessary
   // constructor (options) { super(options); this.counter = 0 }
 
-  protected newFilename (): string {
+  protected newFilename(): string {
     const filename = strftime(this.path)
     if (filename !== this.currentFilename) this.counter++
     return filename
@@ -97,7 +99,7 @@ class MyFileTimestampStream extends FileTimestampStream {
 }
 
 const stream = new MyFileTimestampStream({
-  path: '%Y-%m-%dT%H:%M.log'
+  path: "%Y-%m-%dT%H:%M.log",
 })
 ```
 
@@ -105,14 +107,14 @@ const stream = new MyFileTimestampStream({
 
 Readonly public properties based on contructor's options:
 
-* `flags`
-* `fs`
-* `path`
+- `flags`
+- `fs`
+- `path`
 
 Protected properties for custom subclass:
 
-* `currentFilename` contains last opened filename
-* `stream` contains current
+- `currentFilename` contains last opened filename
+- `stream` contains current
   [fs.WriteStream](https://nodejs.org/api/fs.html#fs_class_fs_writestream)
   object
 
