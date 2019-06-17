@@ -167,10 +167,10 @@ export class FileTimestampStream extends Writable {
         if (newFilename !== this.newFilename()) {
           clearInterval(newCloser)
           this.closers.delete(newFilename)
-
           newStream.end()
         }
       }, FileTimestampStream.CLOSE_UNUSED_FILE_AFTER)
+      newCloser.unref()
       this.closer = closer
       this.closers.set(newFilename, newCloser)
 
