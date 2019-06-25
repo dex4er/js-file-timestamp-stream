@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.2.1 2019-06-25
+
+- Minor refactoring.
+
 ## v2.2.0 2019-06-17
 
 - Closer's timer is `unref`-ed to prevent holding a NodeJS runtime.
