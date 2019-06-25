@@ -17,9 +17,9 @@ export interface FileTimestampStreamOptions extends WritableOptions {
 export class FileTimestampStream extends Writable {
   static readonly CLOSE_UNUSED_FILE_AFTER = 1000
 
-  readonly flags: string
-  readonly fs: typeof fs
-  readonly path: string
+  readonly flags = this.options.flags || "a"
+  readonly fs = this.options.fs || fs
+  readonly path = this.options.path || "out.log"
 
   /** contains last opened filename */
   protected currentFilename?: string
@@ -27,18 +27,16 @@ export class FileTimestampStream extends Writable {
   protected stream?: WriteStream
 
   private destroyed = false
-  private streams: Map<string, WriteStream> = new Map()
-  private streamCancelFinishers: Map<string, () => void> = new Map()
-  private streamErrorHandlers: Map<string, (err: Error) => void> = new Map()
+
+  private readonly streams: Map<string, WriteStream> = new Map()
+  private readonly streamCancelFinishers: Map<string, () => void> = new Map()
+  private readonly streamErrorHandlers: Map<string, (err: Error) => void> = new Map()
+  private readonly closers: Map<string, NodeJS.Timer> = new Map()
+
   private closer?: NodeJS.Timer
-  private closers: Map<string, NodeJS.Timer> = new Map()
 
-  constructor(options: FileTimestampStreamOptions = {}) {
+  constructor(private options: FileTimestampStreamOptions = {}) {
     super(options)
-
-    this.flags = options.flags || "a"
-    this.fs = options.fs || fs
-    this.path = options.path || "out.log"
   }
 
   _write(chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
