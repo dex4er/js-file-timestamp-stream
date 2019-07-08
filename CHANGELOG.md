@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.2.2 2019-07-08
+
+- Updated dependencies.
+
 ## v2.2.1 2019-06-25
 
 - Minor refactoring.
