@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.2.4 2019-10-07
+
+- Compatible with newer NodeJS typings.
+- Updated dependencies.
+
 ## v2.2.3 2019-07-10
 
 - Updated dependencies.

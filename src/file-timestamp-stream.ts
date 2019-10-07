@@ -21,12 +21,12 @@ export class FileTimestampStream extends Writable {
   readonly fs = this.options.fs || fs
   readonly path = this.options.path || "out.log"
 
+  destroyed = false
+
   /** contains last opened filename */
   protected currentFilename?: string
   /** contains current [fs.WriteStream](https://nodejs.org/api/fs.html#fs_class_fs_writestream) object */
   protected stream?: WriteStream
-
-  private destroyed = false
 
   private readonly streams: Map<string, WriteStream> = new Map()
   private readonly streamCancelFinishers: Map<string, () => void> = new Map()
