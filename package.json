@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "stream.finished": "^1.2.0",
-    "tslib": "^1.10.0",
+    "tslib": "^2.6.3",
     "ultra-strftime": "^1.0.2"
   },
   "devDependencies": {
