@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.0.0 2024-06-26
+
+- Converted to ESM module.
+- Requires Node >= 16.
+
 ## v2.2.4 2019-10-07
 
 - Compatible with newer NodeJS typings.

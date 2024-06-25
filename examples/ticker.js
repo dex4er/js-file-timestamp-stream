@@ -1,18 +1,12 @@
 #!/usr/bin/env node
 
-"use strict"
+import FileTimestampStream from "../lib/file-timestamp-stream.js"
 
-const {FileTimestampStream} = require("../lib/file-timestamp-stream")
-
-const strftime = require("ultra-strftime")
+import strftime from "ultra-strftime"
 
 class MyFileTimestampStream extends FileTimestampStream {
-  constructor(options) {
-    super(options)
-
-    this.lineCounter = 0
-    this.fileCounter = 0
-  }
+  lineCounter = 0
+  fileCounter = 0
 
   countWrittenLines() {
     console.info(`Written line #${++this.lineCounter} to ${this.currentFilename} (file #${this.fileCounter})`)

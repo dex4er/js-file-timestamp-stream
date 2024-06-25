@@ -1,11 +1,11 @@
 import {expect} from "chai"
 
-import {And, Feature, Given, Scenario, Then, When} from "./lib/steps"
+import {And, Feature, Given, Scenario, Then, When} from "./lib/steps.js"
 
 process.env.TZ = "GMT"
 
-import FileTimestampStream from "../src/file-timestamp-stream"
-import mockFs from "./lib/mock-fs"
+import FileTimestampStream from "../src/file-timestamp-stream.js"
+import mockFs from "./lib/mock-fs.js"
 
 Feature("Test file-timestamp-stream module", () => {
   Scenario("Open error for write", () => {
@@ -18,9 +18,7 @@ Feature("Test file-timestamp-stream module", () => {
         fs: mockFs as any,
       })
 
-      expect(wstream)
-        .to.have.property("pipe")
-        .that.is.a("function")
+      expect(wstream).to.have.property("pipe").that.is.a("function")
     })
 
     And("subscription on error event", () => {
@@ -34,9 +32,7 @@ Feature("Test file-timestamp-stream module", () => {
     })
 
     Then("an error was because can't open file", () => {
-      expect(error)
-        .to.have.property("message")
-        .that.equals("badopen")
+      expect(error).to.have.property("message").that.equals("badopen")
     })
   })
 
@@ -50,9 +46,7 @@ Feature("Test file-timestamp-stream module", () => {
         fs: mockFs as any,
       })
 
-      expect(wstream)
-        .to.have.property("pipe")
-        .that.is.a("function")
+      expect(wstream).to.have.property("pipe").that.is.a("function")
     })
 
     And("subscription on error event", () => {
@@ -66,9 +60,7 @@ Feature("Test file-timestamp-stream module", () => {
     })
 
     Then("an error was because can't write to file", () => {
-      expect(error)
-        .to.have.property("message")
-        .that.equals("badwrite")
+      expect(error).to.have.property("message").that.equals("badwrite")
     })
 
     And("stream can be destroyed", () => {

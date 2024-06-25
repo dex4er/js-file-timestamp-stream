@@ -1,11 +1,11 @@
 import {expect} from "chai"
 
-import {And, Feature, Given, Scenario, Then, When} from "./lib/steps"
+import {And, Feature, Given, Scenario, Then, When} from "./lib/steps.js"
 
 process.env.TZ = "GMT"
 
-import FileTimestampStream from "../src/file-timestamp-stream"
-import mockFs, {MockWriteStream} from "./lib/mock-fs"
+import FileTimestampStream from "../src/file-timestamp-stream.js"
+import mockFs, {MockWriteStream} from "./lib/mock-fs.js"
 
 class TestFileTimestampStream extends FileTimestampStream {
   n = 0
@@ -28,9 +28,7 @@ Feature("Test file-timestamp-stream module", () => {
         fs: mockFs as any,
       })
 
-      expect(wstream)
-        .to.have.property("pipe")
-        .that.is.a("function")
+      expect(wstream).to.have.property("pipe").that.is.a("function")
     })
 
     When("I write fist part of content to stream", done => {

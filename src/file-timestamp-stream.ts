@@ -1,8 +1,10 @@
 /// <reference types="node" />
 
-import fs, {WriteStream} from "fs"
-import {Writable, WritableOptions} from "stream"
-import finished from "stream.finished"
+import * as fs from "node:fs"
+import {WriteStream} from "node:fs"
+import {finished, Writable, WritableOptions} from "node:stream"
+
+import * as timers from "timers-obj"
 import strftime from "ultra-strftime"
 
 export interface FileTimestampStreamOptions extends WritableOptions {
@@ -31,7 +33,7 @@ export class FileTimestampStream extends Writable {
   private readonly streams: Map<string, WriteStream> = new Map()
   private readonly streamCancelFinishers: Map<string, () => void> = new Map()
   private readonly streamErrorHandlers: Map<string, (err: Error) => void> = new Map()
-  private readonly closers: Map<string, NodeJS.Timer> = new Map()
+  private readonly closers: Map<string, timers.Interval> = new Map()
 
   private closer?: NodeJS.Timer
 
@@ -39,7 +41,7 @@ export class FileTimestampStream extends Writable {
     super(options)
   }
 
-  _write(chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
+  _write(chunk: any, encoding: BufferEncoding, callback: (error?: Error | null) => void): void {
     if (this.destroyed) {
       return callback(new Error("write after destroy"))
     }
@@ -48,11 +50,11 @@ export class FileTimestampStream extends Writable {
       this.rotate()
       this.stream!.write(chunk, encoding, callback)
     } catch (e) {
-      callback(e)
+      callback(e as Error)
     }
   }
 
-  _writev(chunks: Array<{chunk: any; encoding: string}>, callback: (error?: Error | null) => void): void {
+  _writev(chunks: Array<{chunk: any; encoding: BufferEncoding}>, callback: (error?: Error | null) => void): void {
     if (this.destroyed) {
       return callback(new Error("write after destroy"))
     }
@@ -71,7 +73,7 @@ export class FileTimestampStream extends Writable {
       if (corked) {
         process.nextTick(() => this.stream!.uncork())
       }
-      callback(e)
+      callback(e as Error)
     }
   }
 
@@ -110,7 +112,7 @@ export class FileTimestampStream extends Writable {
     }
     if (this.closers.size > 0) {
       for (const closer of this.closers.values()) {
-        clearInterval(closer)
+        closer.remove()
       }
       this.streams.clear()
     }
@@ -138,7 +140,7 @@ export class FileTimestampStream extends Writable {
 
     if (newFilename !== currentFilename) {
       if (currentFilename && stream && closer) {
-        clearInterval(closer)
+        clearInterval(closer as NodeJS.Timeout)
         stream.end()
 
         const streamErrorHandler = this.streamErrorHandlers.get(currentFilename)
@@ -161,18 +163,18 @@ export class FileTimestampStream extends Writable {
       newStream.on("error", newStreamErrorHandler)
       this.streamErrorHandlers.set(newFilename, newStreamErrorHandler)
 
-      const newCloser = setInterval(() => {
+      const newCloser = timers.interval(FileTimestampStream.CLOSE_UNUSED_FILE_AFTER, () => {
         if (newFilename !== this.newFilename()) {
-          clearInterval(newCloser)
+          newCloser.remove()
           this.closers.delete(newFilename)
           newStream.end()
         }
-      }, FileTimestampStream.CLOSE_UNUSED_FILE_AFTER).unref()
+      })
       this.closer = closer
       this.closers.set(newFilename, newCloser)
 
       const newStreamCancelFinisher = finished(newStream, () => {
-        clearInterval(newCloser)
+        newCloser.remove()
         this.closers.delete(newFilename)
 
         if (typeof newStream.destroy === "function") {

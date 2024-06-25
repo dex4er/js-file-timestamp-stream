@@ -1,6 +1,6 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env -S node --experimental-specifier-resolution=node --experimental-modules --no-warnings --loader ts-node/esm
 
-import FileTimestampStream from "../src/file-timestamp-stream"
+import FileTimestampStream from "../src/file-timestamp-stream.js"
 
 import strftime from "ultra-strftime"
 

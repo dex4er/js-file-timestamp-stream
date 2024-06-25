@@ -1,4 +1,4 @@
-import {Writable} from "stream"
+import {Writable} from "node:stream"
 
 interface MockWriteStreamOptions {
   flags?: string
@@ -12,7 +12,10 @@ interface MockWriteStreamOptions {
 export class MockWriteStream extends Writable {
   content = Buffer.alloc(0)
 
-  constructor(public filename: string, public options: MockWriteStreamOptions) {
+  constructor(
+    public filename: string,
+    public options: MockWriteStreamOptions,
+  ) {
     super()
   }
 

@@ -1,14 +1,11 @@
-import chai, {expect} from "chai"
+import {expect} from "chai"
 
-import dirtyChai from "dirty-chai"
-chai.use(dirtyChai)
-
-import {And, Feature, Given, Scenario, Then, When} from "./lib/steps"
+import {And, Feature, Given, Scenario, Then, When} from "./lib/steps.js"
 
 process.env.TZ = "GMT"
 
-import FileTimestampStream from "../src/file-timestamp-stream"
-import mockFs, {MockWriteStream} from "./lib/mock-fs"
+import FileTimestampStream from "../src/file-timestamp-stream.js"
+import mockFs, {MockWriteStream} from "./lib/mock-fs.js"
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => {
@@ -28,9 +25,7 @@ Feature("Test file-timestamp-stream module", () => {
 
     Given("stream created with no options", () => {
       wstream = new FileTimestampStream()
-      expect(wstream)
-        .to.have.property("pipe")
-        .that.is.a("function")
+      expect(wstream).to.have.property("pipe").that.is.a("function")
     })
 
     And("stream has the default filename", () => {
@@ -57,9 +52,7 @@ Feature("Test file-timestamp-stream module", () => {
       wstream.on("finish", () => {
         finished = true
       })
-      expect(wstream)
-        .to.have.property("pipe")
-        .that.is.a("function")
+      expect(wstream).to.have.property("pipe").that.is.a("function")
     })
 
     When("I write first part of content to stream", done => {
@@ -72,7 +65,7 @@ Feature("Test file-timestamp-stream module", () => {
 
     And("stream has defined filename", () => {
       filename1 = wstream.mockStream.filename
-      expect(filename1).to.be.ok()
+      expect(filename1).to.be.ok
     })
 
     And("stream has correct flags", () => {
@@ -93,7 +86,7 @@ Feature("Test file-timestamp-stream module", () => {
 
     And("stream has defined another filename", () => {
       filename2 = wstream.mockStream.filename
-      expect(filename2).to.be.ok()
+      expect(filename2).to.be.ok
     })
 
     And("stream has correct flags", () => {
@@ -109,7 +102,7 @@ Feature("Test file-timestamp-stream module", () => {
     })
 
     Then("stream is finished", () => {
-      expect(finished).to.be.true()
+      expect(finished).to.be.true
     })
 
     And("stream can be destroyed", () => {
@@ -133,9 +126,7 @@ Feature("Test file-timestamp-stream module", () => {
       wstream.on("finish", () => {
         finished = true
       })
-      expect(wstream)
-        .to.have.property("pipe")
-        .that.is.a("function")
+      expect(wstream).to.have.property("pipe").that.is.a("function")
     })
 
     When("I cork a stream", () => {
@@ -168,7 +159,7 @@ Feature("Test file-timestamp-stream module", () => {
 
     And("stream has defined filename", () => {
       filename = wstream.mockStream.filename
-      expect(filename).to.be.ok()
+      expect(filename).to.be.ok
     })
 
     And("stream has correct flags", () => {
@@ -180,7 +171,7 @@ Feature("Test file-timestamp-stream module", () => {
     })
 
     Then("stream is finished", () => {
-      expect(finished).to.be.true()
+      expect(finished).to.be.true
     })
 
     And("stream can be destroyed", () => {

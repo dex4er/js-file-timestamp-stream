@@ -2,7 +2,11 @@
 
 <!-- markdownlint-disable MD013 -->
 
-[![Build Status](https://secure.travis-ci.org/dex4er/js-file-timestamp-stream.svg)](http://travis-ci.org/dex4er/js-file-timestamp-stream) [![Coverage Status](https://coveralls.io/repos/github/dex4er/js-file-timestamp-stream/badge.svg)](https://coveralls.io/github/dex4er/js-file-timestamp-stream) [![npm](https://img.shields.io/npm/v/file-timestamp-stream.svg)](https://www.npmjs.com/package/file-timestamp-stream)
+[![GitHub](https://img.shields.io/github/v/release/dex4er/js-file-timestamp-stream?display_name=tag&sort=semver)](https://github.com/dex4er/js-file-timestamp-stream)
+[![CI](https://github.com/dex4er/js-file-timestamp-stream/actions/workflows/ci.yaml/badge.svg)](https://github.com/dex4er/js-file-timestamp-stream/actions/workflows/ci.yaml)
+[![Trunk Check](https://github.com/dex4er/js-file-timestamp-stream/actions/workflows/trunk.yaml/badge.svg)](https://github.com/dex4er/js-file-timestamp-stream/actions/workflows/trunk.yaml)
+[![Coverage Status](https://coveralls.io/repos/github/dex4er/js-file-timestamp-stream/badge.svg)](https://coveralls.io/github/dex4er/js-file-timestamp-stream)
+[![npm](https://img.shields.io/npm/v/file-timestamp-stream.svg)](https://www.npmjs.com/package/file-timestamp-stream)
 
 <!-- markdownlint-enable MD013 -->
 
@@ -13,7 +17,7 @@ to a file which is automatically rotated based on current time and uses
 
 ## Requirements
 
-This module requires ES6 with Node >= 6.
+This module requires ES2021 with Node >= 16.
 
 ## Installation
 
@@ -32,12 +36,6 @@ npm install -D @types/node
 _Example:_
 
 ```js
-const {FileTimestampStream} = require("file-timestamp-stream")
-```
-
-_Typescript:_
-
-```ts
 import FileTimestampStream from "file-timestamp-stream"
 // or
 import {FileTimestampStream} from "file-timestamp-stream"
@@ -47,7 +45,7 @@ import {FileTimestampStream} from "file-timestamp-stream"
 
 - `flags` is a string with
   [flags](https://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback)
-  for opened stream (default: `'a'`)
+  for the opened stream (default: `'a'`)
 - `fs` is a custom [fs](https://nodejs.org/api/fs.html) module (optional)
 - `path` is a template for new filenames (default: `'out.log'`)
 
@@ -64,9 +62,9 @@ const stream = new FileTimestampStream({
 
 ### newFilename
 
-This method can be overriden in subclass.
+This method can be overridden in the subclass.
 
-The method generates a filename for new files. By default it returns new
+The method generates a filename for new files. By default, it returns a new
 filename based on path and current time.
 
 _Example:_
@@ -101,23 +99,23 @@ Readonly public properties based on contructor's options:
 - `fs`
 - `path`
 
-Protected properties for custom subclass:
+Protected properties for a custom subclass:
 
-- `currentFilename` contains last opened filename
+- `currentFilename` contains the last opened filename
 - `stream` contains current
   [fs.WriteStream](https://nodejs.org/api/fs.html#fs_class_fs_writestream)
   object
 
 ### Path template format
 
-Path can contain [strftime](https://www.npmjs.com/package/strftime) specifiers.
+A path can contain [strftime](https://www.npmjs.com/package/strftime) specifiers.
 
 ### Warning
 
-This stream have to be closed to free own streams and timers.
+This stream has to be closed to free streams and timers.
 
 ## License
 
-Copyright (c) 2017-2019 Piotr Roszatycki <piotr.roszatycki@gmail.com>
+Copyright (c) 2017-2024 Piotr Roszatycki <piotr.roszatycki@gmail.com>
 
 [MIT](https://opensource.org/licenses/MIT)
