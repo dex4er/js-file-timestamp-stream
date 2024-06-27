@@ -2,6 +2,7 @@
 
 import FileTimestampStream from "../src/file-timestamp-stream.js"
 
+import * as timers from "timers-obj"
 import strftime from "ultra-strftime"
 
 class MyFileTimestampStream extends FileTimestampStream {
@@ -23,8 +24,8 @@ const stream = new MyFileTimestampStream({
   path: "%Y-%m-%dT%H:%M:%S.log",
 })
 
-setInterval(() => {
+timers.interval(800, () => {
   const date = new Date()
   stream.write(`tick: ${date}\r\n`)
   stream.countWrittenLines()
-}, 800)
+})

@@ -112,7 +112,7 @@ export class FileTimestampStream extends Writable {
     }
     if (this.closers.size > 0) {
       for (const closer of this.closers.values()) {
-        closer.remove()
+        closer.close()
       }
       this.streams.clear()
     }
@@ -165,7 +165,7 @@ export class FileTimestampStream extends Writable {
 
       const newCloser = timers.interval(FileTimestampStream.CLOSE_UNUSED_FILE_AFTER, () => {
         if (newFilename !== this.newFilename()) {
-          newCloser.remove()
+          newCloser.close()
           this.closers.delete(newFilename)
           newStream.end()
         }
@@ -174,7 +174,7 @@ export class FileTimestampStream extends Writable {
       this.closers.set(newFilename, newCloser)
 
       const newStreamCancelFinisher = finished(newStream, () => {
-        newCloser.remove()
+        newCloser.close()
         this.closers.delete(newFilename)
 
         if (typeof newStream.destroy === "function") {

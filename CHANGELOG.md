@@ -4,6 +4,7 @@
 
 - Converted to ESM module.
 - Requires Node >= 16.
+- Uses timers-obj@3.
 
 ## v2.2.4 2019-10-07
 
