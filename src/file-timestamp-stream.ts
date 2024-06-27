@@ -163,13 +163,15 @@ export class FileTimestampStream extends Writable {
       newStream.on("error", newStreamErrorHandler)
       this.streamErrorHandlers.set(newFilename, newStreamErrorHandler)
 
-      const newCloser = timers.interval(FileTimestampStream.CLOSE_UNUSED_FILE_AFTER, () => {
-        if (newFilename !== this.newFilename()) {
-          newCloser.close()
-          this.closers.delete(newFilename)
-          newStream.end()
-        }
-      })
+      const newCloser = timers
+        .interval(FileTimestampStream.CLOSE_UNUSED_FILE_AFTER, () => {
+          if (newFilename !== this.newFilename()) {
+            newCloser.close()
+            this.closers.delete(newFilename)
+            newStream.end()
+          }
+        })
+        .unref()
       this.closer = closer
       this.closers.set(newFilename, newCloser)
 

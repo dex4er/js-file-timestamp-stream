@@ -5,6 +5,7 @@
 - Converted to ESM module.
 - Requires Node >= 16.
 - Uses timers-obj@3.
+- Unref timers so they don't block the event loop.
 
 ## v2.2.4 2019-10-07
 
