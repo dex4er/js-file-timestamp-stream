@@ -30,7 +30,7 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "timers-obj": "^2.1.0",
+    "timers-obj": "^3.0.0",
     "ultra-strftime": "^1.0.2"
   },
   "devDependencies": {
