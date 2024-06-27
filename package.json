@@ -30,7 +30,7 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "timers-obj": "^3.0.0",
+    "timers-obj": "^3.1.0",
     "ultra-strftime": "^1.0.2"
   },
   "devDependencies": {
@@ -39,7 +39,7 @@
     "@types/chai": "^4.3.16",
     "@types/eslint__js": "^8.42.3",
     "@types/mocha": "^10.0.7",
-    "@types/node": "^20.14.8",
+    "@types/node": "^20.14.9",
     "@types/semver": "^7.5.8",
     "@types/ultra-strftime": "^1.0.3",
     "@typescript-eslint/parser": "^7.14.1",
@@ -49,7 +49,7 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "markdownlint-cli": "^0.41.0",
-    "mocha": "^10.5.1",
+    "mocha": "^10.5.2",
     "mocha-steps": "^1.3.0",
     "prettier": "^3.3.2",
     "semver": "^7.6.2",
